@@ -8,8 +8,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SpaceInvaders">
-        <activity android:name=".MainActivity">
+        android:theme="@style/Theme.SpaceInvaders"
+        android:appCategory="game" >
+
+            <!--    L'orientation userLandscape "gira" l'applicazione in uno dei due landscape
+                    se l'utente abilita la rotazione automatica, altrimenti ignora il sensore e
+                    rimane "bloccato" nell'ultimo dei landscape rilevato.   -->
+
+        <activity  android:name=".MainActivity" android:hardwareAccelerated="true"
+            android:resizeableActivity="false" android:screenOrientation="userLandscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
