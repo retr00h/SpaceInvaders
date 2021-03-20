@@ -5,7 +5,7 @@ Schermata principale (porta alla schermata delle impostazioni, ad una schermata 
 
 <h2>Funzionalità principali di una partita</h2>
 Generare ondate di nemici;
-Generare powerup casuali ogni tanto (da definire);
+Generare powerup casuali ogni tanto (da definire)->(si potrebbero generare casualmente dopo aver eliminato dei nemici oppure dopo un numero prestabilito di nemici);
 Muovere il personaggio coi dati dell'accelerometro;
 Sparare toccando lo schermo (da definire);
 Perdere una vita se il personaggio viene colpito (o guadagnarne fino ad un max di X quando si prende un powerup specifico);
