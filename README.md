@@ -25,6 +25,6 @@ Salvataggio automatico durante l'onPause();
 
 <h1>Idee realizzative</h1>
 
-activity_start è l'activity avviata all'avvio dell'app, conterrà come nel video il tasto start, il titolo del gioco, l'icona delle opzioni e magari ci sta anche inserire il punteggio maggiore raggiunto dall'utente
+activity_start è l'activity avviata all'avvio dell'app, conterrà il tasto start, il titolo del gioco, l'icona delle opzioni e magari ci sta anche inserire il punteggio maggiore raggiunto dall'utente
 
 activity_main invece viene lanciata alla pressione del bottone start e contiene il gioco
