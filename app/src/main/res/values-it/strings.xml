@@ -4,4 +4,5 @@
     <string name="audio_switch_text">Audio</string>
     <string name="language_name">Italiano</string>
     <string name="language_text">Lingua</string>
+    <string name="startButton">Inizia</string>
 </resources>
