@@ -1,4 +1,4 @@
-package com.devfabiocirelli.spaceinvaders
+ package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
 import android.util.DisplayMetrics
