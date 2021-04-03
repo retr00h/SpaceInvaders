@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Space%20Invaders</string>
+    <string name="app_name" translatable="false">"Space Invaders"</string>
     <string name="haptic_switch_text">Vibrations</string>
     <string name="audio_switch_text">Sound</string>
     <string name="language_name">English</string>
     <string name="language_text">Language</string>
     <string name="startButton">Start</string>
     <string name="gameTitle" translatable="false">Space Invaders</string>
+    <string name="language_will_be_applied">Language preference updated, they will be applied by changing window.</string>
 </resources>

@@ -1,9 +1,12 @@
 package com.devfabiocirelli.spaceinvaders
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
+
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
@@ -12,6 +15,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.i(TAG, "onCreate")
+
+        val fragment = StartPageFragment()
+        val fragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.contentFragment, fragment)
+        transaction.commit()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

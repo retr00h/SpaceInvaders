@@ -15,11 +15,11 @@
                     se l'utente abilita la rotazione automatica, altrimenti ignora il sensore e
                     rimane "bloccato" nell'ultimo dei landscape rilevato.   -->
 
-        <activity  android:name=".MainActivity" android:hardwareAccelerated="true"
-            android:resizeableActivity="false" android:screenOrientation="userLandscape" >
+        <activity android:name=".MainActivity" android:hardwareAccelerated="true"
+            android:resizeableActivity="false" android:screenOrientation="userLandscape"
+            android:configChanges="locale|orientation" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

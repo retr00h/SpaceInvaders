@@ -1,57 +1,71 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SettingsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SettingsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    val TAG = "SettingsFragment"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false)
-    }
+            // Inflate the layout for this fragment
+            super.onCreateView(inflater, container, savedInstanceState)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SettingsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                SettingsFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
+            /*
+                questo blocco di codice e' necessario per instanziare il fragment, prelevare il
+                button, e dargli un onClickListener che possa reagire ai clic su di esso
+             */
+            val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
+            val languageBtn = rootView.findViewById<Button>(R.id.languageButton)
+            val backBtn = rootView.findViewById<ImageButton>(R.id.imageButtonBack)
+
+            // funzione lambda che aggiorna la locale a livello di activity al clic sul bottone
+            languageBtn.setOnClickListener {
+                Log.i(TAG, "Change language button pressed")
+                val activity = this.requireActivity()
+                val language = languageBtn.text
+
+                /*
+                    il seguente codice modifica le resources attualmente in uso, nello specifico, crea
+                    un nuovo locale (vedere il blocco if) e lo sostituisce a quello attualmente in uso
+                 */
+                val res = resources
+                val dm: DisplayMetrics = res.getDisplayMetrics()
+                val conf = res.getConfiguration()
+
+                val newLocale = if (language == "Italiano") {
+                    // il testo del bottone cliccato è "Italiano", vuol dire che la lingua deve passare
+                    // da italiano ad inglese
+                    Locale("en")
+                } else {
+                    // viceversa
+                    Locale("it")
                 }
+
+                // TODO: il testo del toast è sempre mostrato in Inglese, fix asap
+                Toast.makeText(activity.applicationContext, R.string.language_will_be_applied, Toast.LENGTH_SHORT).show()
+
+                conf.locale = newLocale
+                res.updateConfiguration(conf, dm)
+            }
+
+            // funzione lambda che ritorna allo startFragment al clic sul bottone
+            backBtn.setOnClickListener {
+                Log.i(TAG, "Back button pressed")
+                val fragment = StartPageFragment()
+                val fragmentManager = this.requireActivity().supportFragmentManager
+                fragmentManager.popBackStack()
+            }
+
+            return rootView
     }
 }
