@@ -45,10 +45,10 @@ class SettingsFragment : Fragment() {
                 val newLocale = if (language == "Italiano") {
                     // il testo del bottone cliccato è "Italiano", vuol dire che la lingua deve passare
                     // da italiano ad inglese
-                    Locale("en")
+                    Locale.ENGLISH
                 } else {
                     // viceversa
-                    Locale("it")
+                    Locale.ITALIAN
                 }
 
                 // TODO: il testo del toast è sempre mostrato in Inglese, fix asap
