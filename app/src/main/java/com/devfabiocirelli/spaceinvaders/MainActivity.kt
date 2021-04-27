@@ -1,26 +1,36 @@
 package com.devfabiocirelli.spaceinvaders
 
-import android.content.res.Configuration
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
+    val db = DataBaseHelper(this)
+    lateinit var settings: Triple<Boolean, Boolean, String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.i(TAG, "onCreate")
 
-        val fragment = StartPageFragment()
+        val fragment = StartPageFragment(this)
         val fragmentManager = supportFragmentManager
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.contentFragment, fragment)
         transaction.commit()
+
+        settings = db.readSettings()
+
+        val dm: DisplayMetrics = resources.getDisplayMetrics()
+        val conf = resources.getConfiguration()
+        conf.locale = if (settings.third.startsWith("en")) Locale.ENGLISH else Locale.ITALIAN
+        resources.updateConfiguration(conf, dm)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

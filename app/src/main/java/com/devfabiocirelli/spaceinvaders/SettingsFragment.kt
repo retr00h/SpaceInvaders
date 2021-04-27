@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_settings.*
 import java.util.*
 
-class SettingsFragment : Fragment() {
+class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
     val TAG = "SettingsFragment"
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -27,11 +29,27 @@ class SettingsFragment : Fragment() {
             val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
             val languageBtn = rootView.findViewById<Button>(R.id.languageButton)
             val backBtn = rootView.findViewById<ImageButton>(R.id.imageButtonBack)
+            val soundSwitch = rootView.findViewById<SwitchCompat>(R.id.soundSwitch)
+            val hapticSwitch = rootView.findViewById<SwitchCompat>(R.id.hapticSwitch)
+
+            soundSwitch.isChecked = mainActivity.settings.first
+            hapticSwitch.isChecked = mainActivity.settings.second
+
+            soundSwitch.setOnClickListener {
+                Log.i(TAG, "Sound switch pressed")
+                mainActivity.settings = Triple(soundSwitch.isChecked, hapticSwitch.isChecked, mainActivity.settings.third)
+                mainActivity.db.updateSettings(audio = soundSwitch.isChecked, vibrations = hapticSwitch.isChecked, locale = mainActivity.settings.third)
+            }
+
+            hapticSwitch.setOnClickListener {
+                Log.i(TAG, "Haptic switch pressed")
+                mainActivity.settings = Triple(soundSwitch.isChecked, hapticSwitch.isChecked, mainActivity.settings.third)
+                mainActivity.db.updateSettings(audio = soundSwitch.isChecked, vibrations = hapticSwitch.isChecked, locale = mainActivity.settings.third)
+            }
 
             // funzione lambda che aggiorna la locale a livello di activity al clic sul bottone
             languageBtn.setOnClickListener {
                 Log.i(TAG, "Change language button pressed")
-                val activity = this.requireActivity()
                 val language = languageBtn.text
 
                 /*
@@ -52,16 +70,18 @@ class SettingsFragment : Fragment() {
                 }
 
                 // TODO: il testo del toast è sempre mostrato in Inglese, fix asap
-                Toast.makeText(activity.applicationContext, R.string.language_will_be_applied, Toast.LENGTH_SHORT).show()
+                Toast.makeText(mainActivity.applicationContext, R.string.language_will_be_applied, Toast.LENGTH_SHORT).show()
 
                 conf.locale = newLocale
                 res.updateConfiguration(conf, dm)
+
+                mainActivity.settings = Triple(soundSwitch.isChecked, hapticSwitch.isChecked, newLocale.toString())
+                mainActivity.db.updateSettings(audio = soundSwitch.isChecked, vibrations = hapticSwitch.isChecked, locale = newLocale.toString())
             }
 
             // funzione lambda che ritorna allo startFragment al clic sul bottone
             backBtn.setOnClickListener {
                 Log.i(TAG, "Back button pressed")
-                val fragment = StartPageFragment()
                 val fragmentManager = this.requireActivity().supportFragmentManager
                 fragmentManager.popBackStack()
             }

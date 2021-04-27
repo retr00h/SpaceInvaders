@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import androidx.fragment.app.FragmentTransaction
 
-class StartPageFragment : Fragment() {
+class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
     val TAG = "StartPageFragment"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -24,13 +24,20 @@ class StartPageFragment : Fragment() {
         startBtn.setOnClickListener {
             Log.i(TAG, "Start Button Pressed")
             // TODO: come il codice sotto ma deve far partire il fragment della partita
+
+            val fragment = GameFragment()
+            val fragmentManager = this.requireActivity().supportFragmentManager
+            val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+            transaction.replace(R.id.contentFragment, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
 
         // funzione lambda che sposta al settingsFragment (aggiungendolo alla backStack) al clic sul bottone
         optionsBtn.setOnClickListener {
             Log.i(TAG, "Options button pressed")
 
-            val fragment = SettingsFragment()
+            val fragment = SettingsFragment(mainActivity)
             val fragmentManager = this.requireActivity().supportFragmentManager
             val transaction: FragmentTransaction = fragmentManager.beginTransaction()
             transaction.replace(R.id.contentFragment, fragment)
