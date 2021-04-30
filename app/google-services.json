@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "39028420499",
+    "firebase_url": "https://spaceinvaders-ad6e1-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "spaceinvaders-ad6e1",
+    "storage_bucket": "spaceinvaders-ad6e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39028420499:android:44f11db974193361ae0266",
+        "android_client_info": {
+          "package_name": "com.devfabiocirelli.spaceinvaders"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39028420499-co3fpshpac0e3fh39e8n461uap59asd2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.devfabiocirelli.spaceinvaders",
+            "certificate_hash": "3d4f596318ce3849681eca90302a789518eacb4e"
+          }
+        },
+        {
+          "client_id": "39028420499-rg51ahkcr833242gg0um9egfaj216f6i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClo6IAsHr3vgWWjmFjtNXLyHU1AEDC8Fk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39028420499-aiic36c5jquf3vhidk93a5rsi6imk7ut.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

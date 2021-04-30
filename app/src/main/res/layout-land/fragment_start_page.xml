@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/startPageFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
@@ -10,16 +9,12 @@
 
     <TextView
         android:id="@+id/gameTitle"
-        android:layout_width="210dp"
-        android:layout_height="132dp"
-        android:layout_marginTop="100dp"
-        android:editable="false"
-        android:gravity="center"
+        android:layout_width="171dp"
+        android:layout_height="73dp"
         android:text="@string/gameTitle"
         android:textColor="@color/white"
-        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.499"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,46 +25,20 @@
         android:background="@drawable/outlined_button"
         android:text="@string/startButton"
         android:textColor="@drawable/button_text_color"
-        app:layout_constraintBottom_toBottomOf="@+id/resumeButton"
-        app:layout_constraintEnd_toStartOf="@+id/resumeButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/resumeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/outlined_button"
-        android:text="@string/resume_game"
-        android:textColor="@drawable/button_text_color"
-        app:layout_constraintBottom_toBottomOf="@+id/newActivity"
-        app:layout_constraintEnd_toStartOf="@+id/newActivity"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/startButton" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/newActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/customButton"
-        android:background="@drawable/outlined_button"
-        android:textColor="@drawable/button_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/resumeButton"
-        app:layout_constraintTop_toBottomOf="@+id/gameTitle"
-        app:layout_constraintVertical_bias="0.577" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameTitle" />
 
     <ImageButton
         android:id="@+id/imageButtonOption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/transparent_button"
-        android:src="@drawable/baseline_settings_36"
         android:tint="@drawable/button_text_color"
+        android:src="@drawable/baseline_settings_36"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
