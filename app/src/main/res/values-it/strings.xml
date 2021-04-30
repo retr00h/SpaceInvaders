@@ -6,4 +6,6 @@
     <string name="language_text">Lingua</string>
     <string name="startButton">Inizia</string>
     <string name="language_will_be_applied">Impostazioni aggiornate, saranno applicate cambiando finestra.</string>
+    <string name="resume_game">Riprendi partita</string>
+    <string name="customButton">Personalizzazione nave</string>
 </resources>
