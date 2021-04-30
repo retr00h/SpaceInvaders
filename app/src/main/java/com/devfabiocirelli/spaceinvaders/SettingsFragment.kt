@@ -32,22 +32,29 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             val soundSwitch = rootView.findViewById<SwitchCompat>(R.id.soundSwitch)
             val hapticSwitch = rootView.findViewById<SwitchCompat>(R.id.hapticSwitch)
 
-            soundSwitch.isChecked = mainActivity.settings.first
-            hapticSwitch.isChecked = mainActivity.settings.second
+            // inizializza gli switch con i valori in settings (che a questo punto dell'esecuzione
+            // sono sicuramente non nulli)
+            soundSwitch.isChecked = mainActivity.settings!!.audio!!
+            hapticSwitch.isChecked = mainActivity.settings!!.vibrations!!
 
+            // se soundSwitch viene cliccato, vengono creati nuovi Settings coi valori aggiornati
+            // e vengono aggiornati anche i valori nel database remoto
             soundSwitch.setOnClickListener {
                 Log.i(TAG, "Sound switch pressed")
-                mainActivity.settings = Triple(soundSwitch.isChecked, hapticSwitch.isChecked, mainActivity.settings.third)
-                mainActivity.db.updateSettings(audio = soundSwitch.isChecked, vibrations = hapticSwitch.isChecked, locale = mainActivity.settings.third)
+                mainActivity.settings = Settings(soundSwitch.isChecked, hapticSwitch.isChecked, mainActivity.settings!!.locale)
+                mainActivity.reference.child("settings").setValue(mainActivity.settings)
             }
 
+            // se hapticSwitch viene cliccato, vengono creati nuovi Settings coi valori aggiornati
+            // e vengono aggiornati anche i valori nel database remoto
             hapticSwitch.setOnClickListener {
                 Log.i(TAG, "Haptic switch pressed")
-                mainActivity.settings = Triple(soundSwitch.isChecked, hapticSwitch.isChecked, mainActivity.settings.third)
-                mainActivity.db.updateSettings(audio = soundSwitch.isChecked, vibrations = hapticSwitch.isChecked, locale = mainActivity.settings.third)
+                mainActivity.settings = Settings(soundSwitch.isChecked, hapticSwitch.isChecked, mainActivity.settings!!.locale)
+                mainActivity.reference.child("settings").setValue(mainActivity.settings)
             }
 
-            // funzione lambda che aggiorna la locale a livello di activity al clic sul bottone
+            // funzione lambda che aggiorna la locale a livello di activity al clic sul bottone,
+            // e i valori in settings e nel database remoto
             languageBtn.setOnClickListener {
                 Log.i(TAG, "Change language button pressed")
                 val language = languageBtn.text
@@ -69,14 +76,15 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
                     Locale.ITALIAN
                 }
 
-                // TODO: il testo del toast è sempre mostrato in Inglese, fix asap
+                // TODO: il testo del toast è sempre mostrato in Inglese
                 Toast.makeText(mainActivity.applicationContext, R.string.language_will_be_applied, Toast.LENGTH_SHORT).show()
 
-                conf.locale = newLocale
-                res.updateConfiguration(conf, dm)
-
-                mainActivity.settings = Triple(soundSwitch.isChecked, hapticSwitch.isChecked, newLocale.toString())
-                mainActivity.db.updateSettings(audio = soundSwitch.isChecked, vibrations = hapticSwitch.isChecked, locale = newLocale.toString())
+                // vengono creati nuovi Settings coi valori aggiornati
+                // e vengono aggiornati anche i valori nel database remoto.
+                // non c'è bisogno di aggiornare la lingua qui, in quanto viene aggiornata nel listener
+                // su mainActivity.reference.child("settings")
+                mainActivity.settings = Settings(soundSwitch.isChecked, hapticSwitch.isChecked, newLocale.toString())
+                mainActivity.reference.child("settings").setValue(mainActivity.settings)
             }
 
             // funzione lambda che ritorna allo startFragment al clic sul bottone
