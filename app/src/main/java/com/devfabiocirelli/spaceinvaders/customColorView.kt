@@ -8,7 +8,7 @@ import android.view.View
 
 class customColorView : View{
 
-    private val paint = Paint()
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     constructor(context: Context?) : super(context){
 

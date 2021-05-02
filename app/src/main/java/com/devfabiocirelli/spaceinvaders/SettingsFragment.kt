@@ -10,9 +10,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Switch
 import android.widget.Toast
-import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_settings.*
 import java.util.*
 
 class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {

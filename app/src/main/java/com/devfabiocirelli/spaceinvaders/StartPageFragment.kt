@@ -34,7 +34,7 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         val startBtn = rootView.findViewById<Button>(R.id.startButton)
         val optionsBtn = rootView.findViewById<ImageButton>(R.id.imageButtonOption)
         val resumeButton = rootView.findViewById<Button>(R.id.resumeButton)
-        val newActivityButton = rootView.findViewById<Button>(R.id.newActivity)
+        val newActivityButton = rootView.findViewById<Button>(R.id.customizationActivity)
 
         signInButton = rootView.findViewById<SignInButton>(R.id.signInButton);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
