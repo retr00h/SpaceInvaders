@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
@@ -17,12 +18,14 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
-    private var referenceValueListener = getSettingsReferenceValueListener()
-    private var gameValueListener = getGameReferenceValueListener()
-    private lateinit var auth: FirebaseAuth
+    val SIGN_IN_ACTIVITY_CODE = 1
+    var settingsValueListener: ValueEventListener? = null //getSettingsNodeValueListener()
+    var gameValueListener: ValueEventListener? = null // getGameNodeValueListener()
+    lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var database: FirebaseDatabase
     lateinit var userReference: DatabaseReference
-    var user: FirebaseUser? = null
+    lateinit var auth: FirebaseAuth
+    lateinit var uid: String
     var settings: Settings? = null
     var gameData: GameData? = null
     var canAddEventListeners = true
@@ -32,29 +35,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Log.i(TAG, "onCreate")
 
-        // autentica in modo anonimo
+        // inizializza l'oggetto per l'autenticazione tramite account google
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("39028420499-aiic36c5jquf3vhidk93a5rsi6imk7ut.apps.googleusercontent.com")
+                .requestEmail()
+                .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = Firebase.auth
-        user = auth.currentUser
-        auth.signInAnonymously()
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Log.d(TAG, "signInAnonymously:success")
-                    user = auth.currentUser
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInAnonymously:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                }
-            }
-
-        // setta la variabile database e dà a reference la root dell'utente autenticato
-        database = FirebaseDatabase.getInstance()
-        userReference = database.reference.child("${user?.uid}")
 
         // questo metodo è chiamato ANCHE qui per evitare un crash provocato da un accesso alla
         // schermata impostazioni troppo prima che le impostazioni siano state lette dal database
-        addEventListeners()
+//        addEventListeners()
 
         // crea un'istanza di StartPageFragment, che viene inserita nel contentFragment e visualizzata
         val fragment = StartPageFragment(this)
@@ -64,35 +55,43 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    private fun addEventListeners() {
+    fun addEventListeners() {
         if (canAddEventListeners) {
             canAddEventListeners = false
-            userReference.child("settings").addValueEventListener(referenceValueListener)
-            userReference.child("game").addValueEventListener(gameValueListener)
+            settingsValueListener = getSettingsNodeValueListener()
+            gameValueListener = getGameNodeValueListener()
+            userReference.child("settings").addValueEventListener(settingsValueListener!!)
+            userReference.child("game").addValueEventListener(gameValueListener!!)
         }
     }
 
     private fun removeEventListeners() {
         if (!canAddEventListeners) {
             canAddEventListeners = true
-            userReference.child("settings").removeEventListener(referenceValueListener)
-            userReference.child("game").removeEventListener(gameValueListener)
+            userReference.child("settings").removeEventListener(settingsValueListener!!)
+            userReference.child("game").removeEventListener(gameValueListener!!)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        addEventListeners()
+        // setta la variabile database e dà a reference la root dell'utente autenticato
+        if (auth.currentUser != null) {
+            database = FirebaseDatabase.getInstance()
+            uid = auth.currentUser.uid
+            userReference = database.reference.child(uid)
+            addEventListeners()
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        removeEventListeners()
+        if (auth.currentUser != null) removeEventListeners()
     }
 
     // funzione usata per inizializzare il settings listener (che ascolta per cambiamenti nel nodo
     // uid/settings del database remoto)
-    private fun getSettingsReferenceValueListener(): ValueEventListener {
+    private fun getSettingsNodeValueListener(): ValueEventListener {
         return object: ValueEventListener {
             // all'avvio, e quando un dato qualunque in userID/settings viene modificato,
             // aggiorna la variabile settings e la lingua a livello di app
@@ -118,7 +117,7 @@ class MainActivity : AppCompatActivity() {
 
     // funzione usata per inizializzare il game listener (che ascolta per cambiamenti nel nodo
     // uid/game del database remoto)
-    private fun getGameReferenceValueListener(): ValueEventListener {
+    private fun getGameNodeValueListener(): ValueEventListener {
         return object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 gameData = snapshot.getValue(GameData::class.java)

@@ -13,4 +13,5 @@
     <string name="alertPositiveButton">Sì</string>
     <string name="alertNegativeButton">No</string>
     <string name="noSavedGameAvailable">Non c\'è nessuna partita da riprendere</string>
+    <string name="login_first">Prima devi effettuare il login con Google!</string>
 </resources>

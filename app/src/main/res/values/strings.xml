@@ -16,4 +16,5 @@
     <string name="alertPositiveButton">Yes</string>
     <string name="alertNegativeButton">No</string>
     <string name="noSavedGameAvailable">There isn\'t any game to resume</string>
+    <string name="login_first">You have to login with Google first!</string>
 </resources>
