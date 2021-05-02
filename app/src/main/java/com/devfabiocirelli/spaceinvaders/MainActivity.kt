@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
@@ -19,11 +18,14 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
     private var referenceValueListener = getSettingsReferenceValueListener()
+    private var gameValueListener = getGameReferenceValueListener()
     private lateinit var auth: FirebaseAuth
     lateinit var database: FirebaseDatabase
-    lateinit var reference: DatabaseReference
+    lateinit var userReference: DatabaseReference
     var user: FirebaseUser? = null
     var settings: Settings? = null
+    var gameData: GameData? = null
+    var canAddEventListeners = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +50,11 @@ class MainActivity : AppCompatActivity() {
 
         // setta la variabile database e dà a reference la root dell'utente autenticato
         database = FirebaseDatabase.getInstance()
-        reference = database.reference.child("${user?.uid}")
+        userReference = database.reference.child("${user?.uid}")
+
+        // questo metodo è chiamato ANCHE qui per evitare un crash provocato da un accesso alla
+        // schermata impostazioni troppo prima che le impostazioni siano state lette dal database
+        addEventListeners()
 
         // crea un'istanza di StartPageFragment, che viene inserita nel contentFragment e visualizzata
         val fragment = StartPageFragment(this)
@@ -58,16 +64,34 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
+    private fun addEventListeners() {
+        if (canAddEventListeners) {
+            canAddEventListeners = false
+            userReference.child("settings").addValueEventListener(referenceValueListener)
+            userReference.child("game").addValueEventListener(gameValueListener)
+        }
+    }
+
+    private fun removeEventListeners() {
+        if (!canAddEventListeners) {
+            canAddEventListeners = true
+            userReference.child("settings").removeEventListener(referenceValueListener)
+            userReference.child("game").removeEventListener(gameValueListener)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
-        reference.child("settings").addValueEventListener(referenceValueListener)
+        addEventListeners()
     }
 
     override fun onStop() {
         super.onStop()
-        reference.child("settings").removeEventListener(referenceValueListener)
+        removeEventListeners()
     }
 
+    // funzione usata per inizializzare il settings listener (che ascolta per cambiamenti nel nodo
+    // uid/settings del database remoto)
     private fun getSettingsReferenceValueListener(): ValueEventListener {
         return object: ValueEventListener {
             // all'avvio, e quando un dato qualunque in userID/settings viene modificato,
@@ -78,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 val conf = resources.configuration
                 if (settings == null) {
                     settings = Settings(true, true, "en_US")
-                    reference.child("settings").setValue(settings)
+                    userReference.child("settings").setValue(settings)
                     conf.locale = Locale.ENGLISH
                 } else {
                     conf.locale = if (settings!!.locale!!.startsWith("en")) Locale.ENGLISH else Locale.ITALIAN
@@ -92,6 +116,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // funzione usata per inizializzare il game listener (che ascolta per cambiamenti nel nodo
+    // uid/game del database remoto)
+    private fun getGameReferenceValueListener(): ValueEventListener {
+        return object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                gameData = snapshot.getValue(GameData::class.java)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        }
+    }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)

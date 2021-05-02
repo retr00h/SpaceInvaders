@@ -1,4 +1,4 @@
- package com.devfabiocirelli.spaceinvaders
+package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
@@ -29,8 +30,8 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             val rootView = inflater.inflate(R.layout.fragment_settings, container, false)
             val languageBtn = rootView.findViewById<Button>(R.id.languageButton)
             val backBtn = rootView.findViewById<ImageButton>(R.id.imageButtonBack)
-            val soundSwitch = rootView.findViewById<SwitchCompat>(R.id.soundSwitch)
-            val hapticSwitch = rootView.findViewById<SwitchCompat>(R.id.hapticSwitch)
+            val soundSwitch = rootView.findViewById<Switch>(R.id.soundSwitch)
+            val hapticSwitch = rootView.findViewById<Switch>(R.id.hapticSwitch)
 
             // inizializza gli switch con i valori in settings (che a questo punto dell'esecuzione
             // sono sicuramente non nulli)
@@ -41,39 +42,30 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             // e vengono aggiornati anche i valori nel database remoto
             soundSwitch.setOnClickListener {
                 Log.i(TAG, "Sound switch pressed")
-                mainActivity.settings = Settings(soundSwitch.isChecked, hapticSwitch.isChecked, mainActivity.settings!!.locale)
-                mainActivity.reference.child("settings").setValue(mainActivity.settings)
+                mainActivity.settings!!.audio = soundSwitch.isChecked
+                mainActivity.userReference.child("settings").setValue(mainActivity.settings)
             }
 
             // se hapticSwitch viene cliccato, vengono creati nuovi Settings coi valori aggiornati
             // e vengono aggiornati anche i valori nel database remoto
             hapticSwitch.setOnClickListener {
                 Log.i(TAG, "Haptic switch pressed")
-                mainActivity.settings = Settings(soundSwitch.isChecked, hapticSwitch.isChecked, mainActivity.settings!!.locale)
-                mainActivity.reference.child("settings").setValue(mainActivity.settings)
+                mainActivity.settings!!.vibrations = hapticSwitch.isChecked
+                mainActivity.userReference.child("settings").setValue(mainActivity.settings)
             }
 
             // funzione lambda che aggiorna la locale a livello di activity al clic sul bottone,
             // e i valori in settings e nel database remoto
             languageBtn.setOnClickListener {
                 Log.i(TAG, "Change language button pressed")
-                val language = languageBtn.text
 
-                /*
-                    il seguente codice modifica le resources attualmente in uso, nello specifico, crea
-                    un nuovo locale (vedere il blocco if) e lo sostituisce a quello attualmente in uso
-                 */
-                val res = resources
-                val dm: DisplayMetrics = res.getDisplayMetrics()
-                val conf = res.getConfiguration()
-
-                val newLocale = if (language == "Italiano") {
+                val newLocale = when (languageBtn.text) {
                     // il testo del bottone cliccato è "Italiano", vuol dire che la lingua deve passare
                     // da italiano ad inglese
-                    Locale.ENGLISH
-                } else {
+                    "Italiano" -> Locale.ENGLISH
                     // viceversa
-                    Locale.ITALIAN
+                    "English" -> Locale.ITALIAN
+                    else -> Locale.ENGLISH
                 }
 
                 // TODO: il testo del toast è sempre mostrato in Inglese
@@ -82,9 +74,9 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
                 // vengono creati nuovi Settings coi valori aggiornati
                 // e vengono aggiornati anche i valori nel database remoto.
                 // non c'è bisogno di aggiornare la lingua qui, in quanto viene aggiornata nel listener
-                // su mainActivity.reference.child("settings")
-                mainActivity.settings = Settings(soundSwitch.isChecked, hapticSwitch.isChecked, newLocale.toString())
-                mainActivity.reference.child("settings").setValue(mainActivity.settings)
+                // su mainActivity.userReference.child("settings")
+                mainActivity.settings!!.locale = newLocale.toString()
+                mainActivity.userReference.child("settings").setValue(mainActivity.settings)
             }
 
             // funzione lambda che ritorna allo startFragment al clic sul bottone

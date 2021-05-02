@@ -6,14 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class GameFragment : Fragment() {
+class GameFragment(val mainActivity: MainActivity) : Fragment() {
     val TAG = "GameFragment"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_game, container, false)
-
-
-
         return rootView
     }
 }

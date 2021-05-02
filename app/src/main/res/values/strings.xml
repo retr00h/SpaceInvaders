@@ -9,7 +9,11 @@
     <string name="gameTitle" translatable="false">Space Invaders</string>
     <string name="language_will_be_applied">Language preference updated, they will be applied by changing window.</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="resume_game">Resume game</string>
     <string name="customButton">Ship customization</string>
+    <string name="alertTitle">Alert!</string>
+    <string name="alertMessage">Starting a new game will delete the saved one. Continue?</string>
+    <string name="alertPositiveButton">Yes</string>
+    <string name="alertNegativeButton">No</string>
+    <string name="noSavedGameAvailable">There isn\'t any game to resume</string>
 </resources>

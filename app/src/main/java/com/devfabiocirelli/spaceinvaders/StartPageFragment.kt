@@ -1,16 +1,19 @@
 package com.devfabiocirelli.spaceinvaders
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import kotlinx.android.synthetic.main.fragment_start_page.*
+import android.widget.Toast
+
 
 class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
     val TAG = "StartPageFragment"
@@ -21,24 +24,43 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_start_page, container, false)
         val startBtn = rootView.findViewById<Button>(R.id.startButton)
         val optionsBtn = rootView.findViewById<ImageButton>(R.id.imageButtonOption)
+        val resumeButton = rootView.findViewById<Button>(R.id.resumeButton)
         val newActivityButton = rootView.findViewById<Button>(R.id.newActivity)
 
-        // funzione lambda che sposterà al fragment che mostra i salvataggi disponibili al clic sul bottone
+        // funzione lambda che inizia una nuova partita
+        // (chiedendo conferma in caso di dati già esistenti)
         startBtn.setOnClickListener {
             Log.i(TAG, "Start Button Pressed")
-            // TODO: come il codice sotto ma deve far partire il fragment della partita
 
-            val fragment = GameFragment()
-            val fragmentManager = this.requireActivity().supportFragmentManager
-            val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-            transaction.replace(R.id.contentFragment, fragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+            // controlla se esiste già una partita salvata, e se c'è avvisa l'utente con un dialog
+            if (mainActivity.gameData != null) {
+                // visualizza il dialog
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle(getString(R.string.alertTitle))
+                builder.setMessage(getString(R.string.alertMessage))
+                // la prossima linea di codice fa sì che se l'utente tocca fuori dal dialog, questo
+                // non viene annullato, ma persiste
+                builder.setCancelable(false)
+                builder.setPositiveButton(getString(R.string.alertPositiveButton)) { dialogInterface: DialogInterface, i: Int ->
+                    startGame(mainActivity)
+                }
+                builder.setNegativeButton(getString(R.string.alertNegativeButton)) { dialogInterface: DialogInterface, i: Int ->}
+
+                val alertDialog = builder.create()
+                alertDialog.show()
+            } else {
+                startGame(mainActivity)
+            }
         }
 
-        /*resumeButton.setOnClickListener{
+        resumeButton.setOnClickListener{
             // TODO: recuperare ultima partita dell'utente se disponibile
-        }*/
+            if (mainActivity.gameData == null) {
+                Toast.makeText(context, getString(R.string.noSavedGameAvailable), Toast.LENGTH_SHORT).show()
+            } else {
+                startGame(mainActivity)
+            }
+        }
 
         newActivityButton.setOnClickListener{
             startActivity(Intent(context, CustomizationActivity::class.java))
@@ -57,5 +79,14 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         }
 
         return rootView
+    }
+
+    private fun startGame(mainActivity: MainActivity) {
+        val fragment = GameFragment(mainActivity)
+        val fragmentManager = this.requireActivity().supportFragmentManager
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.contentFragment, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 }

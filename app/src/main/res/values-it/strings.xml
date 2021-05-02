@@ -8,4 +8,9 @@
     <string name="language_will_be_applied">Impostazioni aggiornate, saranno applicate cambiando finestra.</string>
     <string name="resume_game">Riprendi partita</string>
     <string name="customButton">Personalizzazione nave</string>
+    <string name="alertTitle">Attenzione!</string>
+    <string name="alertMessage">Iniziare una nuova partita cancellerà quella salvata. Continuare?</string>
+    <string name="alertPositiveButton">Sì</string>
+    <string name="alertNegativeButton">No</string>
+    <string name="noSavedGameAvailable">Non c\'è nessuna partita da riprendere</string>
 </resources>
