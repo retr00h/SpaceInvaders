@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpaceInvaders">
-        <activity android:name=".CustomizationActivity"></activity>
+        <activity android:name=".background"></activity>
+        <activity android:name=".CustomizationActivity" />
         <!--
             L'orientation userLandscape "gira" l'applicazione in uno dei due landscape
                     se l'utente abilita la rotazione automatica, altrimenti ignora il sensore e
