@@ -1,9 +1,11 @@
 package com.devfabiocirelli.spaceinvaders
 
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -17,7 +19,8 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    val TAG = "MainActivity"
+    private val TAG = "MainActivity"
+    private lateinit var backgroundAnimation: AnimationDrawable
     val SIGN_IN_ACTIVITY_CODE = 1
     var settingsValueListener: ValueEventListener? = null //getSettingsNodeValueListener()
     var gameValueListener: ValueEventListener? = null // getGameNodeValueListener()
@@ -34,6 +37,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.i(TAG, "onCreate")
+
+        // inizializza la variabile backgroundAnimation, usata in onStart() e onStop()
+        // per far partire/fermare l'animazione dello sfondo
+        findViewById<FrameLayout>(R.id.contentFragment).apply {
+            setBackgroundResource(R.drawable.background_animation)
+            backgroundAnimation = background as AnimationDrawable
+        }
 
         // inizializza l'oggetto per l'autenticazione tramite account google
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -75,6 +85,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        // fa partire l'animazione del background
+        backgroundAnimation.start()
+
         // setta la variabile database e dà a reference la root dell'utente autenticato
         if (auth.currentUser != null) {
             database = FirebaseDatabase.getInstance()
@@ -86,6 +99,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        // ferma l'animazione del background
+        backgroundAnimation.stop()
+
         if (auth.currentUser != null) removeEventListeners()
     }
 
@@ -100,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                 val dm: DisplayMetrics = resources.displayMetrics
                 val conf = resources.configuration
                 if (settings == null) {
-                    settings = Settings(true, true, "en_US")
+                    settings = Settings(true, true, conf.locale.toString())
                     userReference.child("settings").setValue(settings)
                     conf.locale = Locale.ENGLISH
                 } else {

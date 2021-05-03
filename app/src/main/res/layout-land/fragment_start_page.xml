@@ -5,7 +5,6 @@
     android:id="@+id/startPageFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     tools:context=".StartPageFragment">
 
     <TextView
@@ -51,8 +50,8 @@
         android:id="@+id/customizationActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/customButton"
         android:background="@drawable/outlined_button"
+        android:text="@string/customButton"
         android:textColor="@drawable/button_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
