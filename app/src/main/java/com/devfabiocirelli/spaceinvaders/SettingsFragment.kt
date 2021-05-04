@@ -81,6 +81,7 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             backBtn.setOnClickListener {
                 Log.i(TAG, "Back button pressed")
                 val fragmentManager = this.requireActivity().supportFragmentManager
+                //Serve per tornare indietro alla pressione del tasto indietro
                 fragmentManager.popBackStack()
             }
 

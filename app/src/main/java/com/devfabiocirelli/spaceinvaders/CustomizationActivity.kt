@@ -25,7 +25,7 @@ class CustomizationActivity(private val mainActivity: MainActivity?) : AppCompat
 
         //TODO: array delle immagini delle navi
         val ship = arrayOf(
-            R.mipmap.ic_launcher, R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round, R.mipmap.ic_launcher, R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round
+            R.drawable.ic_ship_1, R.drawable.ic_ship_1, R.drawable.ic_ship_1, R.drawable.ic_ship_1, R.drawable.ic_ship_1
         )
 
         //TODO: array di colori
@@ -36,17 +36,22 @@ class CustomizationActivity(private val mainActivity: MainActivity?) : AppCompat
         list_view_ship.adapter = MyAdapter(this, ship, R.layout.ship_model_view)
         list_view_color.adapter = MyAdapter(this, colors, R.layout.ship_color_view)
 
+        list_view_ship.setOnItemClickListener{parent, view, position, id ->
+            val element = parent.getItemAtPosition(position) as Int
+            mainActivity!!.userReference.child("customization").setValue(element)
+        }
+
     }
 
     override fun onStart() {
-        super.onStart()
-        mainActivity?.userReference?.child("customization")?.addValueEventListener(referenceValueListener)
+       super.onStart()
+       mainActivity?.userReference?.child("customization")?.addValueEventListener(referenceValueListener)
     }
 
     override fun onStop() {
-        super.onStop()
+       super.onStop()
         mainActivity?.userReference?.child("customization")?.removeEventListener(referenceValueListener)
-    }
+   }
 
     private fun getSettingsReferenceValueListener(): ValueEventListener {
         return object: ValueEventListener {
@@ -54,23 +59,22 @@ class CustomizationActivity(private val mainActivity: MainActivity?) : AppCompat
             override fun onDataChange(snapshot: DataSnapshot) {
                 customization = snapshot.getValue(Customization::class.java)
                 val dm: DisplayMetrics = resources.displayMetrics
-                val conf = resources.configuration
+               val conf = resources.configuration
                 if (customization == null) {
-                    customization = Customization(R.color.black, R.mipmap.ic_launcher)
+                    customization = Customization(R.color.black, R.drawable.ic_ship_1)
                     mainActivity!!.userReference.child("customization").setValue(customization)
-                    player.choseShip(R.mipmap.ic_launcher)
+                    //TODO: SETTARE LE PERSONALIZZAZIONI DI DEFAULT
 
                 } else {
                     //qui i parametri non possono essere null
-                    player.choseShip(customization!!.ship!!)
+                    //TODO: RECUPERARE LE PERSONALIZZAZIONI SCELTE
                 }
                 resources.updateConfiguration(conf, dm)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.i(TAG, "ERRORRRRR")
+              Log.i(TAG, "ERRORRRRR")
             }
-        }
-    }
-
+      }
+}
 }

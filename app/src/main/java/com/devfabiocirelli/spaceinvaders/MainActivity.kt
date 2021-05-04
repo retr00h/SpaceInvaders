@@ -47,9 +47,9 @@ class MainActivity : AppCompatActivity() {
 
         // inizializza l'oggetto per l'autenticazione tramite account google
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("39028420499-aiic36c5jquf3vhidk93a5rsi6imk7ut.apps.googleusercontent.com")
-                .requestEmail()
-                .build()
+            .requestIdToken("39028420499-aiic36c5jquf3vhidk93a5rsi6imk7ut.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = Firebase.auth
 
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
     // funzione usata per inizializzare il settings listener (che ascolta per cambiamenti nel nodo
     // uid/settings del database remoto)
     private fun getSettingsNodeValueListener(): ValueEventListener {
-        return object: ValueEventListener {
+        return object : ValueEventListener {
             // all'avvio, e quando un dato qualunque in userID/settings viene modificato,
             // aggiorna la variabile settings e la lingua a livello di app
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -120,48 +120,49 @@ class MainActivity : AppCompatActivity() {
                     userReference.child("settings").setValue(settings)
                     conf.locale = Locale.ENGLISH
                 } else {
-                    conf.locale = if (settings!!.locale!!.startsWith("en")) Locale.ENGLISH else Locale.ITALIAN
+                    conf.locale =
+                        if (settings!!.locale!!.startsWith("en")) Locale.ENGLISH else Locale.ITALIAN
                 }
-                resources.updateConfiguration(conf, dm)
+
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.i(TAG, "ERRORRRRR")
-            }
-        }
-    }
-
-    // funzione usata per inizializzare il game listener (che ascolta per cambiamenti nel nodo
-    // uid/game del database remoto)
-    private fun getGameNodeValueListener(): ValueEventListener {
-        return object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                gameData = snapshot.getValue(GameData::class.java)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
+                override fun onCancelled(error: DatabaseError) {
+                    Log.i(TAG, "ERRORRRRR")
+                }
             }
         }
-    }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) hideSystemUI()
-    }
+        // funzione usata per inizializzare il game listener (che ascolta per cambiamenti nel nodo
+        // uid/game del database remoto)
+        private fun getGameNodeValueListener(): ValueEventListener {
+            return object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    gameData = snapshot.getValue(GameData::class.java)
+                }
 
-    private fun hideSystemUI() {
-        // Enables regular immersive mode.
-        // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
-        // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                // Set the content to appear under the system bars so that the
-                // content doesn't resize when the system bars hide and show.
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                // Hide the nav bar and status bar
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
-    }
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            }
+        }
+
+        override fun onWindowFocusChanged(hasFocus: Boolean) {
+            super.onWindowFocusChanged(hasFocus)
+            if (hasFocus) hideSystemUI()
+        }
+
+        private fun hideSystemUI() {
+            // Enables regular immersive mode.
+            // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
+            // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    // Set the content to appear under the system bars so that the
+                    // content doesn't resize when the system bars hide and show.
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    // Hide the nav bar and status bar
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        }
 }
