@@ -11,7 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpaceInvaders">
         <activity android:name=".background"></activity>
-        <activity android:name=".CustomizationActivity" />
+        <activity android:name=".CustomizationActivity"
+            android:configChanges="locale|orientation"
+            android:hardwareAccelerated="true"
+            android:resizeableActivity="false"
+            android:screenOrientation="userLandscape"/>
         <!--
             L'orientation userLandscape "gira" l'applicazione in uno dei due landscape
                     se l'utente abilita la rotazione automatica, altrimenti ignora il sensore e

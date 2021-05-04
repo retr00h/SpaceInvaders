@@ -89,7 +89,12 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         }
 
         newActivityButton.setOnClickListener{
-            startActivity(Intent(context, CustomizationActivity::class.java))
+            val fragment = CustomizationFragment(mainActivity)
+            val fragmentManager = this.requireActivity().supportFragmentManager
+            val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+            transaction.replace(R.id.contentFragment, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
 
         // funzione lambda che sposta al settingsFragment (aggiungendolo alla backStack) al clic sul bottone
