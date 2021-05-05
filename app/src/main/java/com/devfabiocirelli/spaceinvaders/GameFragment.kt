@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class GameFragment(val mainActivity: MainActivity) : Fragment() {
+class GameFragment(val mainActivity: MainActivity, val gameData: GameData) : Fragment() {
     val TAG = "GameFragment"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

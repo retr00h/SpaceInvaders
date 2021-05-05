@@ -25,25 +25,39 @@ import com.google.firebase.database.FirebaseDatabase
 
 class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
     val TAG = "StartPageFragment"
+    lateinit var rootView: View
+    lateinit var startBtn: Button
+    lateinit var optionsBtn: ImageButton
+    lateinit var resumeBtn: Button
+    lateinit var newActivityButton: Button
     lateinit var signInButton: SignInButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val rootView = inflater.inflate(R.layout.fragment_start_page, container, false)
-        val startBtn = rootView.findViewById<Button>(R.id.startButton)
-        val optionsBtn = rootView.findViewById<ImageButton>(R.id.imageButtonOption)
-        val resumeButton = rootView.findViewById<Button>(R.id.resumeButton)
-        val newActivityButton = rootView.findViewById<Button>(R.id.customizationActivity)
+        rootView = inflater.inflate(R.layout.fragment_start_page, container, false)
+        startBtn = rootView.findViewById(R.id.startButton)
+        optionsBtn = rootView.findViewById(R.id.imageButtonOption)
+        resumeBtn = rootView.findViewById(R.id.resumeButton)
+        newActivityButton = rootView.findViewById(R.id.customizationActivity)
 
-        signInButton = rootView.findViewById<SignInButton>(R.id.signInButton);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        signInButton = rootView.findViewById(R.id.signInButton)
+        signInButton.setSize(SignInButton.SIZE_STANDARD)
         signInButton.setOnClickListener {
-            val signInIntent: Intent = mainActivity.mGoogleSignInClient.signInIntent
-            startActivityForResult(signInIntent, mainActivity.SIGN_IN_ACTIVITY_CODE)
+            val signInIntent: Intent = mainActivity.getGoogleSignInClient().signInIntent
+            startActivityForResult(signInIntent, mainActivity.getSignInActivityCode())
         }
 
-        if (mainActivity.settings != null) signInButton.isVisible = false
+        if (!mainActivity.isUserLoggedIn()) {
+            // audio e vibrazioni sono attive di default
+            applyAudio(true)
+        } else {
+            // applica le impostazioni
+            val settings = mainActivity.getSettings()
+            if (settings != null) applyAudio(settings.audio!!)
+        }
+
+        if (mainActivity.isUserLoggedIn()) signInButton.isVisible = false
 
         // funzione lambda che inizia una nuova partita
         // (chiedendo conferma in caso di dati già esistenti)
@@ -51,8 +65,8 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
             Log.i(TAG, "Start Button Pressed")
 
             // controlla se esiste già una partita salvata, e se c'è avvisa l'utente con un dialog
-            if (mainActivity.settings != null) {
-                if (mainActivity.gameData != null) {
+            if (mainActivity.getSettings() != null) {
+                if (mainActivity.getGameData() != null) {
                     // visualizza il dialog
                     val builder = AlertDialog.Builder(requireContext())
                     builder.setTitle(getString(R.string.alertTitle))
@@ -75,10 +89,10 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
             }
         }
 
-        resumeButton.setOnClickListener{
+        resumeBtn.setOnClickListener{
             // TODO: recuperare ultima partita dell'utente se disponibile
-            if (mainActivity.settings != null) {
-                if (mainActivity.gameData == null) {
+            if (mainActivity.isUserLoggedIn()) {
+                if (mainActivity.getGameData() == null) {
                     Toast.makeText(context, getString(R.string.noSavedGameAvailable), Toast.LENGTH_SHORT).show()
                 } else {
                     startGame(mainActivity)
@@ -101,23 +115,18 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         optionsBtn.setOnClickListener {
             Log.i(TAG, "Options button pressed")
 
-            if (mainActivity.settings != null) {
-                val fragment = SettingsFragment(mainActivity)
-                val fragmentManager = this.requireActivity().supportFragmentManager
-                val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-                transaction.replace(R.id.contentFragment, fragment)
-                transaction.addToBackStack(null)
-                transaction.commit()
-            } else {
-                Toast.makeText(requireContext(), R.string.login_first, Toast.LENGTH_SHORT).show()
-            }
+            val fragmentManager = mainActivity.supportFragmentManager
+            val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+            transaction.replace(R.id.contentFragment, mainActivity.getSettingsFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
         return rootView
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == mainActivity.SIGN_IN_ACTIVITY_CODE) {
+        if (requestCode == mainActivity.getSignInActivityCode()) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -141,14 +150,11 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        mainActivity.auth.signInWithCredential(credential).addOnCompleteListener(mainActivity) { task ->
+        mainActivity.getFirebaseAuth().signInWithCredential(credential).addOnCompleteListener(mainActivity) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
-                    mainActivity.uid = mainActivity.auth.currentUser.uid
-                    mainActivity.database = FirebaseDatabase.getInstance()
-                    mainActivity.userReference = mainActivity.database.reference.child(mainActivity.uid)
-                    mainActivity.addEventListeners()
+                    mainActivity.login()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -157,11 +163,19 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
     }
 
     private fun startGame(mainActivity: MainActivity) {
-        val fragment = GameFragment(mainActivity)
+        val fragment = GameFragment(mainActivity, mainActivity.getGameData()!!)
         val fragmentManager = this.requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.contentFragment, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
+    }
+
+    fun applyAudio(audio: Boolean) {
+        startBtn.isSoundEffectsEnabled = audio
+        optionsBtn.isSoundEffectsEnabled = audio
+        resumeBtn.isSoundEffectsEnabled = audio
+        newActivityButton.isSoundEffectsEnabled = audio
+        signInButton.isSoundEffectsEnabled = audio
     }
 }

@@ -53,7 +53,7 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
         list_view_ship.setOnItemClickListener { parent, view, position, id ->
             val element = parent.getItemAtPosition(position)
             Log.i(TAG, "${element}-element")
-            mainActivity?.userReference?.child("customization")?.setValue(element)
+            mainActivity.getUserReference().child("customization").setValue(element)
         }
 
         return rootView
@@ -61,14 +61,14 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
 
         override fun onStart() {
             super.onStart()
-            mainActivity?.userReference?.child("customization")
-                ?.addValueEventListener(referenceValueListener)
+            mainActivity.getUserReference().child("customization")
+                .addValueEventListener(referenceValueListener)
         }
 
         override fun onStop() {
             super.onStop()
-            mainActivity?.userReference?.child("customization")
-                ?.removeEventListener(referenceValueListener)
+            mainActivity.getUserReference().child("customization")
+                .removeEventListener(referenceValueListener)
         }
 
         private fun getSettingsReferenceValueListener(): ValueEventListener {
@@ -80,7 +80,7 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
                     val conf = resources.configuration
                     if (customization == null) {
                         customization = Customization(R.color.black, R.drawable.ic_ship_1)
-                        mainActivity!!.userReference.child("customization").setValue(customization)
+                        mainActivity.getUserReference().child("customization").setValue(customization)
                         //TODO: SETTARE LE PERSONALIZZAZIONI DI DEFAULT
 
                     } else {

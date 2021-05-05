@@ -21,17 +21,19 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private lateinit var backgroundAnimation: AnimationDrawable
-    val SIGN_IN_ACTIVITY_CODE = 1
-    var settingsValueListener: ValueEventListener? = null //getSettingsNodeValueListener()
-    var gameValueListener: ValueEventListener? = null // getGameNodeValueListener()
-    lateinit var mGoogleSignInClient: GoogleSignInClient
-    lateinit var database: FirebaseDatabase
-    lateinit var userReference: DatabaseReference
-    lateinit var auth: FirebaseAuth
-    lateinit var uid: String
-    var settings: Settings? = null
-    var gameData: GameData? = null
-    var canAddEventListeners = true
+    private val SIGN_IN_ACTIVITY_CODE = 1
+    private var settingsValueListener: ValueEventListener? = null //getSettingsNodeValueListener()
+    private var gameValueListener: ValueEventListener? = null // getGameNodeValueListener()
+    private var startPageFragment = StartPageFragment(this)
+    private var settingsFragment = SettingsFragment(this)
+    private var uid: String? = null
+    private var settings: Settings? = null
+    private var gameData: GameData? = null
+    private var canAddEventListeners = true
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var database: FirebaseDatabase
+    private lateinit var userReference: DatabaseReference
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,27 +43,37 @@ class MainActivity : AppCompatActivity() {
         // inizializza la variabile backgroundAnimation, usata in onStart() e onStop()
         // per far partire/fermare l'animazione dello sfondo
         findViewById<FrameLayout>(R.id.contentFragment).apply {
-            setBackgroundResource(R.drawable.background_animation)
             backgroundAnimation = background as AnimationDrawable
         }
 
-        // inizializza l'oggetto per l'autenticazione tramite account google
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("39028420499-aiic36c5jquf3vhidk93a5rsi6imk7ut.apps.googleusercontent.com")
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = Firebase.auth
 
-        // questo metodo è chiamato ANCHE qui per evitare un crash provocato da un accesso alla
-        // schermata impostazioni troppo prima che le impostazioni siano state lette dal database
-//        addEventListeners()
+//        // inizializza l'oggetto per l'autenticazione tramite account google
+//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken("39028420499-aiic36c5jquf3vhidk93a5rsi6imk7ut.apps.googleusercontent.com")
+//                .requestEmail()
+//                .build()
+//        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        // setta la variabile database e dà a reference la root dell'utente autenticato
+        if (auth.currentUser != null) {
+            database = FirebaseDatabase.getInstance()
+            uid = auth.currentUser.uid
+            userReference = database.reference.child(uid.toString())
+            addEventListeners()
+        } else {
+            // inizializza l'oggetto per l'autenticazione tramite account google
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken("39028420499-aiic36c5jquf3vhidk93a5rsi6imk7ut.apps.googleusercontent.com")
+                    .requestEmail()
+                    .build()
+            googleSignInClient = GoogleSignIn.getClient(this, gso)
+        }
 
         // crea un'istanza di StartPageFragment, che viene inserita nel contentFragment e visualizzata
-        val fragment = StartPageFragment(this)
         val fragmentManager = supportFragmentManager
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.contentFragment, fragment)
+        transaction.replace(R.id.contentFragment, startPageFragment)
         transaction.commit()
     }
 
@@ -88,13 +100,7 @@ class MainActivity : AppCompatActivity() {
         // fa partire l'animazione del background
         backgroundAnimation.start()
 
-        // setta la variabile database e dà a reference la root dell'utente autenticato
-        if (auth.currentUser != null) {
-            database = FirebaseDatabase.getInstance()
-            uid = auth.currentUser.uid
-            userReference = database.reference.child(uid)
-            addEventListeners()
-        }
+        if (auth.currentUser != null) addEventListeners()
     }
 
     override fun onStop() {
@@ -108,7 +114,7 @@ class MainActivity : AppCompatActivity() {
     // funzione usata per inizializzare il settings listener (che ascolta per cambiamenti nel nodo
     // uid/settings del database remoto)
     private fun getSettingsNodeValueListener(): ValueEventListener {
-        return object : ValueEventListener {
+        return object: ValueEventListener {
             // all'avvio, e quando un dato qualunque in userID/settings viene modificato,
             // aggiorna la variabile settings e la lingua a livello di app
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -120,49 +126,85 @@ class MainActivity : AppCompatActivity() {
                     userReference.child("settings").setValue(settings)
                     conf.locale = Locale.ENGLISH
                 } else {
-                    conf.locale =
-                        if (settings!!.locale!!.startsWith("en")) Locale.ENGLISH else Locale.ITALIAN
+                    conf.locale = if (settings!!.locale!!.startsWith("en")) Locale.ENGLISH else Locale.ITALIAN
+                    startPageFragment.applyAudio(settings!!.audio!!)
                 }
-
+                resources.updateConfiguration(conf, dm)
             }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.i(TAG, "ERRORRRRR")
-                }
+            override fun onCancelled(error: DatabaseError) {
+                Log.i(TAG, "ERRORRRRR")
             }
         }
+    }
 
-        // funzione usata per inizializzare il game listener (che ascolta per cambiamenti nel nodo
-        // uid/game del database remoto)
-        private fun getGameNodeValueListener(): ValueEventListener {
-            return object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    gameData = snapshot.getValue(GameData::class.java)
-                }
+    // funzione usata per inizializzare il game listener (che ascolta per cambiamenti nel nodo
+    // uid/game del database remoto)
+    private fun getGameNodeValueListener(): ValueEventListener {
+        return object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                gameData = snapshot.getValue(GameData::class.java)
+            }
 
-                override fun onCancelled(error: DatabaseError) {
+            override fun onCancelled(error: DatabaseError) {
 
-                }
             }
         }
+    }
 
-        override fun onWindowFocusChanged(hasFocus: Boolean) {
-            super.onWindowFocusChanged(hasFocus)
-            if (hasFocus) hideSystemUI()
-        }
+    // funzione pubblica che ritorna ture se l'utente è loggato, false altrimenti
+    fun isUserLoggedIn() = uid != null
 
-        private fun hideSystemUI() {
-            // Enables regular immersive mode.
-            // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
-            // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    // Set the content to appear under the system bars so that the
-                    // content doesn't resize when the system bars hide and show.
-                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    // Hide the nav bar and status bar
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
-        }
+    // funzione pubblica che ritorna l'oggetto settings
+    fun getSettings() = settings
+
+    // funzione pubblica che ritorna l'oggetto gameData
+    fun getGameData() = gameData
+
+    // funzione pubblica che ritorna l'oggetto settingsFragment
+    fun getSettingsFragment() = settingsFragment
+
+    // funzione pubblica che ritorna l'oggetto startPageFragment
+    fun getStartPageFragment() = startPageFragment
+
+    // funzione pubblica che ritorna l'id della activity di login
+    fun getSignInActivityCode() = SIGN_IN_ACTIVITY_CODE
+
+    // funzione pubblica che ritorna l'oggetto auth (Firebase)
+    fun getFirebaseAuth() = auth
+
+    // funzione pubblica che ritorna l'oggetto googleSignInClient (per il login tramite Google)
+    fun getGoogleSignInClient() = googleSignInClient
+
+    // funzione pubblica che ritorna l'oggetto userReference (Firebase database)
+    fun getUserReference() = userReference
+
+    // funzione chiamata in StartPageFragment dopo il login (questa funzione esegue solo quando
+    // l'utente si logga "manualmente" attraverso il bottone di login)
+    fun login() {
+        uid = auth.currentUser.uid
+        database = FirebaseDatabase.getInstance()
+        userReference = database.reference.child("$uid")
+        addEventListeners()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) hideSystemUI()
+    }
+
+    private fun hideSystemUI() {
+        // Enables regular immersive mode.
+        // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
+        // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                // Set the content to appear under the system bars so that the
+                // content doesn't resize when the system bars hide and show.
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                // Hide the nav bar and status bar
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    }
 }
