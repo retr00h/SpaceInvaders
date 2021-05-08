@@ -17,6 +17,9 @@
     <string name="alertNegativeButton">No</string>
     <string name="noSavedGameAvailable">There isn\'t any game to resume</string>
     <string name="login_first">You have to login with Google first!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dbCustomUpdateError">Error, could\'t save selected customizations</string>
+    <string name="dbCustomUpdateOk">Customizations updated!</string>
+    <string name="currentSelectedCustomization">Current customizations selected</string>
+    <string name="SpaceshipModel">Spaceship:</string>
+    <string name="selectedColor">Color:</string>
 </resources>

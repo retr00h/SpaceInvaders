@@ -41,13 +41,13 @@
         android:background="@drawable/outlined_button"
         android:text="@string/resume_game"
         android:textColor="@drawable/button_text_color"
-        app:layout_constraintBottom_toBottomOf="@+id/customizationActivity"
-        app:layout_constraintEnd_toStartOf="@+id/customizationActivity"
+        app:layout_constraintBottom_toBottomOf="@+id/customizationFragment"
+        app:layout_constraintEnd_toStartOf="@+id/customizationFragment"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/startButton" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/customizationActivity"
+        android:id="@+id/customizationFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/outlined_button"

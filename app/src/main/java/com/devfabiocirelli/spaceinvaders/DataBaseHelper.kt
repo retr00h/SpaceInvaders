@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import android.widget.Toast
 
 val DATABASE_NAME = "SpaceInvaders.db"
@@ -27,6 +26,10 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
     val LIVES_COL = "lives"
     val POWERUPS_COL = "powerups"
 
+    val CUSTOMIZATION_TABLE =  "customizations"
+    val SHIP_COL = "spaceShips"
+    val COLOR_COL = "spaceShipColors"
+
     /**
      * Questa funzione viene eseguita la prima volta che questa classe viene istanziata,
      * crea il database ed inizializza le tabelle.
@@ -36,9 +39,11 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
                 "$VIBRATIONS_COL INTEGER, $LOCALE_COL VARCHAR(2));"
         val createMatchTable = "CREATE TABLE $GAME_TABLE ($SCORE_COL INTEGER," +
                 "$ENEMY_NUMBER_COL INTEGER, $LIVES_COL INTEGER, $POWERUPS_COL INTEGER);"
+        val createCustomizationsTable = "CREATE TABLE $CUSTOMIZATION_TABLE ($SHIP_COL INTEGER," + "$COLOR_COL INTEGER);"
 
         db?.execSQL(createSettingsTable)
         db?.execSQL(createMatchTable)
+        db?.execSQL(createCustomizationsTable)
         val settingsValues = ContentValues()
         settingsValues.put(AUDIO_COL, 1)
         settingsValues.put(VIBRATIONS_COL, 1)
@@ -51,6 +56,11 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
         gameDataValues.put(LIVES_COL, -1f)
         gameDataValues.put(POWERUPS_COL, -1)
         db?.insert(GAME_TABLE, null, gameDataValues)
+
+        val customizationsValues = ContentValues()
+        customizationsValues.put(SHIP_COL, 1)
+        customizationsValues.put(COLOR_COL, 1)
+        db?.insert(CUSTOMIZATION_TABLE, null, customizationsValues)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -129,7 +139,7 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
         val db = this.readableDatabase
         val query = "SELECT * FROM $GAME_TABLE"
         val result = db.rawQuery(query, null)
-
+        result.moveToFirst()
         score = result.getInt(result.getColumnIndex(SCORE_COL))
         lives = result.getFloat(result.getColumnIndex(LIVES_COL))
         enemies = result.getInt(result.getColumnIndex(ENEMY_NUMBER_COL))
@@ -137,5 +147,35 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
 
         result.close()
         return GameData(score, lives, enemies, powerups)
+    }
+
+    fun updateCustomization(ship: Int, color: Int) {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+
+        contentValues.put(SHIP_COL, ship)
+        contentValues.put(COLOR_COL, color)
+
+        val result = db.update(CUSTOMIZATION_TABLE, contentValues, null, null)
+        if (result == 0) Toast.makeText(context, context.getString(R.string.dbCustomUpdateError), Toast.LENGTH_SHORT).show()
+        else {
+            Toast.makeText(context, context.getString(R.string.dbCustomUpdateOk), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun readCustomization(): Customization {
+
+        val selectedSpaceShip: Int
+        val selectedColor: Int
+
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $CUSTOMIZATION_TABLE"
+        val result = db.rawQuery(query, null)
+        result.moveToFirst()
+        selectedSpaceShip = result.getInt(result.getColumnIndex(SHIP_COL))
+        selectedColor = result.getInt(result.getColumnIndex(COLOR_COL))
+        result.close()
+        return Customization(selectedSpaceShip, selectedColor)
+
     }
 }

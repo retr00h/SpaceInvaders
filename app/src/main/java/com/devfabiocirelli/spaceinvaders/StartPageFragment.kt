@@ -2,7 +2,6 @@ package com.devfabiocirelli.spaceinvaders
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +32,7 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         startBtn = rootView.findViewById(R.id.startButton)
         optionsBtn = rootView.findViewById(R.id.imageButtonOption)
         resumeBtn = rootView.findViewById(R.id.resumeButton)
-        newActivityButton = rootView.findViewById(R.id.customizationActivity)
+        newActivityButton = rootView.findViewById(R.id.customizationFragment)
 
         applyAudio(mainActivity.settings.audio)
 
@@ -77,12 +76,12 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         // funzione lambda che visualizza il fragment di personalizzazione della nave del
         // giocatore
         newActivityButton.setOnClickListener{
-//            val fragment = CustomizationFragment(mainActivity)
-//            val fragmentManager = this.requireActivity().supportFragmentManager
-//            val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-//            transaction.replace(R.id.contentFragment, fragment)
-//            transaction.addToBackStack(null)
-//            transaction.commit()
+            val fragment = CustomizationFragment(mainActivity)
+            val fragmentManager = this.requireActivity().supportFragmentManager
+            val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+            transaction.replace(R.id.contentFragment, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
 
         // funzione lambda che visualizza il fragment delle impostazioni dell'app
