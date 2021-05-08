@@ -36,41 +36,29 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             soundSwitch = rootView.findViewById(R.id.soundSwitch)
             hapticSwitch = rootView.findViewById(R.id.hapticSwitch)
 
-            if (!mainActivity.isUserLoggedIn()) {
-                // audio e vibrazioni sono attive di default
-                applyAudio(true)
-            } else {
-                // applica le impostazioni
-                val audio = mainActivity.getSettings()!!.audio!!
-                applyAudio(audio)
-            }
+            applyAudio(mainActivity.settings.audio)
 
             // inizializza gli switch con i valori in settings (che a questo punto dell'esecuzione
             // sono sicuramente non nulli)
-            soundSwitch.isChecked = if (!mainActivity.isUserLoggedIn()) true else mainActivity.getSettings()!!.audio!!
-            hapticSwitch.isChecked = if (!mainActivity.isUserLoggedIn()) true else mainActivity.getSettings()!!.vibrations!!
+            soundSwitch.isChecked = mainActivity.settings.audio
+            hapticSwitch.isChecked = mainActivity.settings.vibrations
 
             // se soundSwitch viene cliccato, vengono creati nuovi Settings coi valori aggiornati
-            // e vengono aggiornati anche i valori nel database remoto
+            // e vengono aggiornati anche i valori nel database
             soundSwitch.setOnClickListener {
                 Log.i(TAG, "Sound switch pressed")
-                mainActivity.getStartPageFragment().applyAudio(soundSwitch.isChecked)
+                mainActivity.startPageFragment.applyAudio(soundSwitch.isChecked)
                 applyAudio(soundSwitch.isChecked)
-                // se l'utente è loggato, salva anche nel db Firebase
-                if (mainActivity.isUserLoggedIn()) {
-                    mainActivity.getSettings()!!.audio = soundSwitch.isChecked
-                    mainActivity.getUserReference().child("settings").setValue(mainActivity.getSettings())
-                }
+                mainActivity.dataBaseHelper.updateSettings(soundSwitch.isChecked,
+                        mainActivity.settings.vibrations, mainActivity.settings.locale)
             }
 
             // se hapticSwitch viene cliccato, vengono creati nuovi Settings coi valori aggiornati
-            // e vengono aggiornati anche i valori nel database remoto
+            // e vengono aggiornati anche i valori nel database
             hapticSwitch.setOnClickListener {
                 Log.i(TAG, "Haptic switch pressed")
-                if (mainActivity.isUserLoggedIn()) {
-                    mainActivity.getSettings()!!.vibrations = hapticSwitch.isChecked
-                    mainActivity.getUserReference().child("settings").setValue(mainActivity.getSettings())
-                }
+                mainActivity.dataBaseHelper.updateSettings(mainActivity.settings.audio,
+                        hapticSwitch.isChecked, mainActivity.settings.locale)
             }
 
             // funzione lambda che aggiorna la locale a livello di activity al clic sul bottone,
@@ -94,15 +82,12 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
                 // e vengono aggiornati anche i valori nel database remoto.
                 // non c'è bisogno di aggiornare la lingua qui, in quanto viene aggiornata nel listener
                 // su mainActivity.userReference.child("settings")
-                if (mainActivity.isUserLoggedIn()) {
-                    mainActivity.getSettings()!!.locale = newLocale.toString()
-                    mainActivity.getUserReference().child("settings").setValue(mainActivity.getSettings())
-                } else {
-                    val dm: DisplayMetrics = resources.displayMetrics
-                    val conf = resources.configuration
-                    conf.locale = newLocale
-                    resources.updateConfiguration(conf, dm)
-                }
+                val dm: DisplayMetrics = resources.displayMetrics
+                val conf = resources.configuration
+                conf.locale = newLocale
+                resources.updateConfiguration(conf, dm)
+                mainActivity.dataBaseHelper.updateSettings(mainActivity.settings.audio,
+                        mainActivity.settings.vibrations, newLocale.toString())
             }
 
             // funzione lambda che ritorna allo startFragment al clic sul bottone
@@ -116,7 +101,7 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             return rootView
     }
 
-    private fun applyAudio(audio: Boolean) {
+    fun applyAudio(audio: Boolean) {
         languageBtn.isSoundEffectsEnabled = audio
         backBtn.isSoundEffectsEnabled = audio
         soundSwitch.isSoundEffectsEnabled = audio

@@ -1,0 +1,141 @@
+package com.devfabiocirelli.spaceinvaders
+
+import android.content.ContentValues
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import android.widget.Toast
+
+val DATABASE_NAME = "SpaceInvaders.db"
+val DATABASE_VERSION = 1
+
+/**
+ * Classe che gestisce le interazioni con il database SQLite.
+ * Permette di leggere e aggiornare le informazioni relative alle impostazioni
+ * e ai dati di gioco.
+ */
+class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    val SETTINGS_TABLE = "settings"
+    val AUDIO_COL = "audio"
+    val VIBRATIONS_COL = "vibrations"
+    val LOCALE_COL = "locale"
+
+    val GAME_TABLE = "game"
+    val SCORE_COL = "score"
+    val ENEMY_NUMBER_COL = "enemies"
+    val LIVES_COL = "lives"
+    val POWERUPS_COL = "powerups"
+
+    /**
+     * Questa funzione viene eseguita la prima volta che questa classe viene istanziata,
+     * crea il database ed inizializza le tabelle.
+     */
+    override fun onCreate(db: SQLiteDatabase?) {
+        val createSettingsTable = "CREATE TABLE $SETTINGS_TABLE ($AUDIO_COL INTEGER," +
+                "$VIBRATIONS_COL INTEGER, $LOCALE_COL VARCHAR(2));"
+        val createMatchTable = "CREATE TABLE $GAME_TABLE ($SCORE_COL INTEGER," +
+                "$ENEMY_NUMBER_COL INTEGER, $LIVES_COL INTEGER, $POWERUPS_COL INTEGER);"
+
+        db?.execSQL(createSettingsTable)
+        db?.execSQL(createMatchTable)
+        val settingsValues = ContentValues()
+        settingsValues.put(AUDIO_COL, 1)
+        settingsValues.put(VIBRATIONS_COL, 1)
+        settingsValues.put(LOCALE_COL, context.resources.configuration.locale.toString())
+        db?.insert(SETTINGS_TABLE, null, settingsValues)
+
+        val gameDataValues = ContentValues()
+        gameDataValues.put(SCORE_COL, -1)
+        gameDataValues.put(ENEMY_NUMBER_COL, -1)
+        gameDataValues.put(LIVES_COL, -1f)
+        gameDataValues.put(POWERUPS_COL, -1)
+        db?.insert(GAME_TABLE, null, gameDataValues)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+//        if (oldVersion < 2) db?.execSQL(DATABASE_ALTER_TABLE_1)
+    }
+
+    /**
+     * Questa funzione permette di aggiornare i valori delle impostazioni,
+     * aggiornando l'unica riga esistente.
+     */
+    fun updateSettings(audio: Boolean, vibrations: Boolean, locale: String) {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(AUDIO_COL, audio)
+        contentValues.put(VIBRATIONS_COL, vibrations)
+        contentValues.put(LOCALE_COL, locale)
+
+        val result = db.update(SETTINGS_TABLE, contentValues, null, null)
+        // TODO: sostituire le stringhe delle toast con quelle di strings.xml
+        if (result == 0) Toast.makeText(context, "Couldn't save new settings", Toast.LENGTH_SHORT).show()
+        else {
+            Toast.makeText(context, "New settings saved", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * Questa funzione permette di leggere i valori delle impostazioni.
+     */
+    fun readSettings() : Settings {
+        val audio: Boolean
+        val vibrations: Boolean
+        val locale: String
+
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $SETTINGS_TABLE"
+        val result = db.rawQuery(query, null)
+
+        result.moveToFirst()
+        audio = result.getInt(result.getColumnIndex(AUDIO_COL)) == 1
+        vibrations = result.getInt(result.getColumnIndex(VIBRATIONS_COL)) == 1
+        locale = result.getString(result.getColumnIndex(LOCALE_COL))
+
+        result.close()
+        return Settings(audio, vibrations, locale)
+    }
+
+    /**
+     * Questa funzione permette di aggiornare i valori dei dati di gioco,
+     * aggiornando l'unica riga esistente.
+     */
+    fun updateGameData(score: Int, lives: Float, enemies: Int, powerups: Int) {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(SCORE_COL, score)
+        contentValues.put(LIVES_COL, lives)
+        contentValues.put(ENEMY_NUMBER_COL, enemies)
+        contentValues.put(POWERUPS_COL, powerups)
+
+        val result = db.update(GAME_TABLE, contentValues, null, null)
+        // TODO: sostituire le stringhe delle toast con quelle di strings.xml
+        if (result == 0) Toast.makeText(context, "Couldn't save new settings", Toast.LENGTH_SHORT).show()
+        else {
+            Toast.makeText(context, "New settings saved", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * Questa funzione permette di leggere i valori dei dati di gioco.
+     */
+    fun readGameData(): GameData {
+        val score: Int
+        val lives: Float
+        val enemies: Int
+        val powerups: Int
+
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $GAME_TABLE"
+        val result = db.rawQuery(query, null)
+
+        score = result.getInt(result.getColumnIndex(SCORE_COL))
+        lives = result.getFloat(result.getColumnIndex(LIVES_COL))
+        enemies = result.getInt(result.getColumnIndex(ENEMY_NUMBER_COL))
+        powerups = result.getInt(result.getColumnIndex(POWERUPS_COL))
+
+        result.close()
+        return GameData(score, lives, enemies, powerups)
+    }
+}
