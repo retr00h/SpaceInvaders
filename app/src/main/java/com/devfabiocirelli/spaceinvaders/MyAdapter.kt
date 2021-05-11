@@ -24,14 +24,10 @@ class MyAdapter(private val context: Context, val data: Array<Int>, val layout: 
             if(layout == R.layout.ship_color_view) {
                 val imageColor = newView.findViewById<customColorView>(R.id.colorView)
                 imageColor.setColor(data[position])
-                imageColor.setOnClickListener{
-
-                }
             }
             if(layout == R.layout.ship_model_view){
                 val shipModel = newView.findViewById<ImageView>(R.id.shipImage)
                 shipModel.setImageResource(data[position])
-
             }
         }
 

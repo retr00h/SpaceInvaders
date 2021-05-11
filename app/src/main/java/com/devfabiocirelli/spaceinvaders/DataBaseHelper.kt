@@ -175,7 +175,7 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
         selectedSpaceShip = result.getInt(result.getColumnIndex(SHIP_COL))
         selectedColor = result.getInt(result.getColumnIndex(COLOR_COL))
         result.close()
-        return Customization(selectedSpaceShip, selectedColor)
+        return Customization(selectedColor, selectedSpaceShip)
 
     }
 }

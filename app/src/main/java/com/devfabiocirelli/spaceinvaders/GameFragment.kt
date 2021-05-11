@@ -12,5 +12,6 @@ class GameFragment(val mainActivity: MainActivity, val gameData: GameData) : Fra
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_game, container, false)
         return rootView
+
     }
 }

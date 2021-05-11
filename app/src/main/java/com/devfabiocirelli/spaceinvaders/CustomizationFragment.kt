@@ -1,12 +1,14 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import kotlinx.android.synthetic.main.fragment_customization.*
+import kotlinx.android.synthetic.main.fragment_customization.view.*
 
 class CustomizationFragment(private val mainActivity: MainActivity) : Fragment() {
 
@@ -21,7 +23,14 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
 
         val rootView = inflater.inflate(R.layout.fragment_customization, container, false)
 
-        // Inflate the layout for this fragment
+        //imposta la textView all'avvio con le personalizzazioni dell'utente salvate attualmente nel database
+        val selectedCustom = mainActivity.dataBaseHelper.readCustomization()
+        rootView?.textView?.text = (
+                mainActivity.applicationContext.getString(R.string.currentSelectedCustomization) + "\n"
+                        + mainActivity.applicationContext.getString(R.string.SpaceshipModel) + "${selectedCustom.ship}\n"
+                        + mainActivity.applicationContext.getString(R.string.selectedColor) + "${selectedCustom.color}")
+
+        //TODO: array di immagini delle navi
         val ship = arrayOf(
             R.drawable.ic_ship_1,
             R.drawable.ic_ship_1,
@@ -36,8 +45,8 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
                 R.color.blue,
                 R.color.red,
                 R.color.grey,
-                R.color.white,
-                R.color.darkGrey
+                R.color.darkGrey,
+                R.color.white
         )
 
         val list_view_ship = rootView.findViewById<ListView>(R.id.list_view_ship)
@@ -47,28 +56,34 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
         list_view_ship.adapter = MyAdapter(requireContext(), ship, R.layout.ship_model_view)
         list_view_color.adapter = MyAdapter(requireContext(), colors, R.layout.ship_color_view)
 
+        //I due listener ottengono la posizione selezionata dall'utente e aggiornano nel database
+        //le personalizzazioni scelte
         list_view_ship.setOnItemClickListener{ parent, view, position, id ->
-            val element = parent.getItemAtPosition(position) as Int
             val selectedCustom = mainActivity.dataBaseHelper.readCustomization()
-            val color = selectedCustom.color
+            val element = parent.getItemAtPosition(position) as Int
+            var color = selectedCustom.color
             mainActivity.dataBaseHelper.updateCustomization(element, color!!)
+            setText()
         }
 
         list_view_color.setOnItemClickListener{ parent, view, position, id ->
-            val element = parent.getItemAtPosition(position) as Int
             val selectedCustom = mainActivity.dataBaseHelper.readCustomization()
-            val ship = selectedCustom.ship
+            val element = parent.getItemAtPosition(position) as Int
+            var ship = selectedCustom.ship
             mainActivity.dataBaseHelper.updateCustomization(ship!!, element)
+            setText()
         }
 
-        //Imposta il testo della textView con le personalizzazioni selezionate dall'utente
-        val selectedCustom = mainActivity.dataBaseHelper.readCustomization()
-        textView.text = (
-            mainActivity.applicationContext.getString(R.string.currentSelectedCustomization) + "\n"
-            + mainActivity.applicationContext.getString(R.string.SpaceshipModel) + "${selectedCustom.ship}\n"
-            + mainActivity.applicationContext.getString(R.string.selectedColor) +"${selectedCustom.color}")
-
         return rootView
+    }
+
+    //Imposta il testo della textView con le personalizzazioni selezionate dall'utente
+    private fun setText() {
+        val selectedCustom = mainActivity.dataBaseHelper.readCustomization()
+            textView?.text = (
+                mainActivity.applicationContext.getString(R.string.currentSelectedCustomization) + "\n"
+                        + mainActivity.applicationContext.getString(R.string.SpaceshipModel) + "${selectedCustom.ship}\n"
+                        + mainActivity.applicationContext.getString(R.string.selectedColor) + "${selectedCustom.color}")
     }
 
 
