@@ -32,11 +32,10 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
 
         //TODO: array di immagini delle navi
         val ship = arrayOf(
-            R.drawable.ic_ship_1,
-            R.drawable.ic_ship_1,
-            R.drawable.ic_ship_1,
-            R.drawable.ic_ship_1,
-            R.drawable.ic_ship_1
+            R.mipmap.ic_playership_1_foreground,
+            R.mipmap.ic_playership_2_foreground,
+            R.mipmap.ic_playership_3_foreground,
+            R.mipmap.ic_playership_4_foreground
         )
 
         //TODO: array di colori

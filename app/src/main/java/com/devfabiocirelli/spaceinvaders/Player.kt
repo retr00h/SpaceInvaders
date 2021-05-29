@@ -3,11 +3,7 @@ package com.devfabiocirelli.spaceinvaders
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
-import android.graphics.drawable.Drawable
-import android.util.AttributeSet
-import android.view.View
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.drawable.DrawableCompat
+import android.util.Log
 
 class Player(context: Context, width: Int, height: Int) {
 
@@ -19,7 +15,7 @@ class Player(context: Context, width: Int, height: Int) {
     var x = (width*0.45).toInt()
     var y = (height*0.75).toInt()
 
-    val shipSpeed = width/10
+    val shipSpeed = width/300
 
     val context = context
 
@@ -50,32 +46,29 @@ class Player(context: Context, width: Int, height: Int) {
     }
 
     private var selectedShip = when(selectedCustom.ship){
-        0 -> R.drawable.ic_ship_1
-        1 -> 2 //TODO: secondo modello
-        2 -> 3 //TODO: terzo modello
-        3 -> 4 //TODO: quarto modello
-        else -> R.drawable.ic_ship_1
+        0 -> R.mipmap.ic_playership_1_foreground
+        1 -> R.mipmap.ic_playership_2_foreground
+        2 -> R.mipmap.ic_playership_3_foreground
+        3 -> R.mipmap.ic_playership_4_foreground
+        else -> R.mipmap.ic_playership_1_foreground
     }
 
     //TODO: controllare
     val ship = setShip(selectedShip, selectedShipColor)
 
-    val bitmap = BitmapFactory.decodeResource(context.resources, ship)
-    val mBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
-
-    val bitmapWidth = mBitmap.width
-    val bitmapHeight = mBitmap.height
+    val shipBitmap =  BitmapFactory.decodeResource(context.resources, ship)
+    val mShipBitmap =  Bitmap.createScaledBitmap(shipBitmap, h, w, false)
 
     //Le seguenti coordinate vengono utilizzate anche per i proiettili
-    var top = y + (bitmapHeight*0.3).toInt()
-    var bottom= y + (bitmapHeight*0.8).toInt()
-    val left = x + (bitmapWidth*0.2).toInt()
-    val right = x + (bitmapWidth*0.8).toInt()
+    var top = y + (mShipBitmap.height*0.3).toInt()
+    var bottom= y + (mShipBitmap.height*0.8).toInt()
+    val left = x + (mShipBitmap.width*0.2).toInt()
+    val right = x + (mShipBitmap.width*0.8).toInt()
 
     var playerHitBox = Rect(left, top, right, bottom)
 
-    var bLeft = x + (bitmapWidth*0.4).toInt()
-    var bRight = x + (bitmapWidth*0.6).toInt()
+    var bLeft = x + (mShipBitmap.width*0.4).toInt()
+    var bRight = x + (mShipBitmap.width*0.6).toInt()
 
 
     fun updatePlayerPosition(direction: Int) {
@@ -88,12 +81,14 @@ class Player(context: Context, width: Int, height: Int) {
             }
 
             //aggiornamento coordinate hitbox giocatore
-            playerHitBox.left = x + (bitmapWidth*0.2).toInt()
-            playerHitBox.right = x + (bitmapWidth*0.8).toInt()
+            playerHitBox.left = x + (mShipBitmap.width*0.2).toInt()
+            playerHitBox.right = x + (mShipBitmap.width*0.8).toInt()
             //aggiornamento coordinate proiettile
-            bLeft = x + (bitmapWidth*0.4).toInt()
-            bRight = x + (bitmapWidth*0.6).toInt()
+            bLeft = x + (mShipBitmap.width*0.4).toInt()
+            bRight = x + (mShipBitmap.width*0.6).toInt()
 
+        } else {
+            Log.i("Player", "Fine mappa")
         }
     }
 
