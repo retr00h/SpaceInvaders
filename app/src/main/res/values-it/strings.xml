@@ -19,4 +19,5 @@
     <string name="currentSelectedCustomization">Personalizzazione selezionate</string>
     <string name="SpaceshipModel">Astronave:</string>
     <string name="selectedColor">Colore:</string>
+    <string name="Fire">Spara</string>
 </resources>

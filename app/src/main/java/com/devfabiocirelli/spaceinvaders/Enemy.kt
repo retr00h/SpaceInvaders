@@ -43,23 +43,36 @@ class Enemy(context: Context, width: Int, height: Int) {
         right += (w*1.3).toInt()
     }
 
-    fun updatePosition(direction: Int) : Int{
-        if(direction == 1){
-            for(h: Rect in enemyHitboxList){
-                h.left += (w*0.2).toInt()
-                h.right += (w*0.2).toInt()
+    fun updatePosition(direction: Int): Int {
+            if (direction == 1) {
+                for (h: Rect in enemyHitboxList) {
+                    h.left += (w * 0.2).toInt()
+                    h.right += (w * 0.2).toInt()
+                }
+                return enemyHitboxList[enemyHitboxList.size-1].right
+            } else {
+                for (h: Rect in enemyHitboxList) {
+                    h.left -= (w * 0.2).toInt()
+                    h.right -= (w * 0.2).toInt()
+                }
+                return enemyHitboxList[0].left
             }
-            return enemyHitboxList[enemyHitboxList.size].right
-        } else {
-            for(h: Rect in enemyHitboxList){
-                h.left -= (w*0.2).toInt()
-                h.right -= (w*0.2).toInt()
+    }
+
+    fun compactList(enemyHitbox: Rect, enemyPosInList: Int): Int{
+        var tempHitboxList = mutableListOf<Rect>()
+        var tempEnemyList = mutableListOf<Bitmap>()
+        var i = 0
+        for(rect: Rect in enemyHitboxList){
+            if(rect != enemyHitbox && i != enemyPosInList){
+                tempHitboxList.add(rect)
+                tempEnemyList.add(enemyList[i])
             }
-            return enemyHitboxList[0].left
+            i++
         }
-
-
-
+        enemyList = tempEnemyList
+        enemyHitboxList = tempHitboxList
+        return enemyList.size
     }
 
 }

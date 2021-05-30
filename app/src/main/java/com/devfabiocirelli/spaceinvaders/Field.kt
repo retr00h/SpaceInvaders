@@ -36,7 +36,7 @@ class Field: View {
         }
 
     }
-    var colpito = false
+    //var colpito = false
 
     var i: Int = 0
 
@@ -55,10 +55,8 @@ class Field: View {
             enemy!!.addEnemy(5)
         }
 
-        paint.setColor(Color.RED)
-
-
-
+        paint.setColor(Color.BLACK)
+        //disegna tutti i nemici presenti in enemyList
         for(e: Bitmap in enemy!!.enemyList){
             canvas.drawRect(enemy!!.enemyHitboxList[i], paint)
             canvas.drawBitmap(e, (enemy!!.enemyHitboxList[i].left).toFloat(), (height/100).toFloat(), paint)
@@ -71,8 +69,9 @@ class Field: View {
         i = 0
 
 
-        paint.setColor(Color.WHITE)
-        canvas.drawRect(playerShip!!.playerHitBox, paint)
+        //Disegna il giocatore e la sua hitbox
+        paint.setColor(Color.TRANSPARENT)
+        //canvas.drawRect(playerShip!!.playerHitBox, paint)
         paint.setColor(Color.BLACK)
         canvas.drawBitmap(playerShip!!.mShipBitmap, (playerShip!!.x).toFloat(), (playerShip!!.y).toFloat(), paint)
 
@@ -84,14 +83,22 @@ class Field: View {
         if(fire) {
             paint.setColor(Color.RED)
             for(bullet: Rect in playerShip!!.bulletList) {
-//                         if(bullet.intersect(r)){
-//                             playerShip!!.bulletList.remove(bullet)
-//                             colpito = true
-//                         } else {
-//                             canvas.drawRect(bullet, paint)
-//                         }
+                var pos = 0
+                for (enemyHitbox: Rect in enemy!!.enemyHitboxList) {
+                    if (bullet.intersect(enemyHitbox)) {
+                        playerShip!!.compactBulletList(bullet)
+                        var remaining = enemy!!.compactList(enemyHitbox, pos)
+                        if(remaining == 0){
+                            start = false
+                            break
+                        }
+                    } else {
                         canvas.drawRect(bullet, paint)
                     }
+                    canvas.drawRect(bullet, paint)
+                    pos++
+                }
+            }
                 }
 
             }
@@ -117,7 +124,6 @@ class Field: View {
         if (p > 0) {
             fire = true
             p = playerShip!!.fire()
-            Log.i(TAG, "Sparato ${p} ${height}")
             return 1
         } else {
             fire = false
@@ -132,23 +138,21 @@ class Field: View {
     }
 
     var enemyPos = 1
-    fun enemyUpdatePosition(){
-        enemyPos = enemy!!.updatePosition(enemyPos)
-    }
+    var direction = 1
 
+    fun enemyUpdatePosition(ok: Boolean){
+        if(ok) {
+            direction = enemy!!.updatePosition(enemyPos)
+
+            if (direction >= width) {
+                enemyPos = 0
+            }
+            if (direction <= 0) {
+                enemyPos = 1
+            }
+        }
+    }
+//
 }
-//TODO: spostare questa parte di codice nel main
-//thread(start = true){
-//    while(true){
-//        //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 10 millisecondi
-//        if(fire) {
-//            var fine = playerShip.onClickFire()
-//            playerShip.invalidate()
-//            Thread.sleep(10)
-//            if(fine == 0){
-//                fire = false
-//            }
-//        }
-//    }
-//}
+
 

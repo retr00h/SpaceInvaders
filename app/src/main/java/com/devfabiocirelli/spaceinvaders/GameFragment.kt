@@ -1,6 +1,7 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,20 +46,25 @@ class GameFragment(val mainActivity: MainActivity, val gameData: GameData) : Fra
 
 
         thread(start = true){
-        while(true){
+            var timing = 0
+        while(true) {
             //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 10 millisecondi
-            if(fire) {
-                var fine = gameField.onClickFire()
-                gameField.invalidate()
-                if(fine == 0){
-                    fire = false
-                }
-                }
+            if (fire) {
+                //if(timing%3==0) {
+                    var fine = gameField.onClickFire()
+                    gameField.invalidate()
+                    if (fine == 0) {
+                        fire = false
+                    }
+                    timing = 0
+                //}
             }
-            if(gameField.start){
-                gameField.enemyUpdatePosition()
+            timing++
+            if (gameField.start) {
+                gameField.enemyUpdatePosition(gameField.start)
             }
-            Thread.sleep(10)
+            Thread.sleep(100)
+        }
 
         }
 

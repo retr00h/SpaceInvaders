@@ -22,4 +22,5 @@
     <string name="currentSelectedCustomization">Current customizations selected</string>
     <string name="SpaceshipModel">Spaceship:</string>
     <string name="selectedColor">Color:</string>
+    <string name="Fire">Fire</string>
 </resources>

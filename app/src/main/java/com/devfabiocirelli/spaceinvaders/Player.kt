@@ -73,7 +73,7 @@ class Player(context: Context, width: Int, height: Int) {
 
     fun updatePlayerPosition(direction: Int) {
 
-        if (right <= length || left >= 0) {
+        if (right <= length && left >= 0) {
             if (direction == 1) { //Se uguale a 1 si sposta a destra, altrimenti a sinistra
                 x += shipSpeed
             } else {
@@ -125,14 +125,18 @@ class Player(context: Context, width: Int, height: Int) {
     //Imposta il colore dell'astronave
     private fun setShip(selectedShip: Int, selectedColor: Int): Int{
 
-//        val drawable = AppCompatResources.getDrawable(context, selectedShip)
-//        //e' importante fare questa operazione per fornire la compatibilità con le versioni precedenti a API 22
-//        val wrappedDrawable = DrawableCompat.wrap(drawable!!)
-//        //imposta il colore
-//        DrawableCompat.setTint(wrappedDrawable, selectedColor)
-
         return selectedShip
 
+    }
+
+    fun compactBulletList(bullet: Rect){
+        var tempBulletList = mutableListOf<Rect>()
+        for(r: Rect in bulletList){
+            if(r != bullet){
+                tempBulletList.add(r)
+            }
+        }
+        bulletList = tempBulletList
     }
 
 }
