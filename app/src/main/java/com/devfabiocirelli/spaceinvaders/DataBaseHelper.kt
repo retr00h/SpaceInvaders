@@ -24,7 +24,8 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
     val SCORE_COL = "score"
     val ENEMY_NUMBER_COL = "enemies"
     val LIVES_COL = "lives"
-    val POWERUPS_COL = "powerups"
+    val LEVEL_COL = "level"
+    val RESUMABLEGAME_COL = "resumableGame"
 
     val CUSTOMIZATION_TABLE =  "customizations"
     val SHIP_COL = "spaceShips"
@@ -38,7 +39,7 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
         val createSettingsTable = "CREATE TABLE $SETTINGS_TABLE ($AUDIO_COL INTEGER," +
                 "$VIBRATIONS_COL INTEGER, $LOCALE_COL VARCHAR(2));"
         val createMatchTable = "CREATE TABLE $GAME_TABLE ($SCORE_COL INTEGER," +
-                "$ENEMY_NUMBER_COL INTEGER, $LIVES_COL INTEGER, $POWERUPS_COL INTEGER);"
+                "$ENEMY_NUMBER_COL INTEGER, $LIVES_COL INTEGER, $LEVEL_COL INTEGER, $RESUMABLEGAME_COL INTEGER);"
         val createCustomizationsTable = "CREATE TABLE $CUSTOMIZATION_TABLE ($SHIP_COL INTEGER," + "$COLOR_COL INTEGER);"
 
         db?.execSQL(createSettingsTable)
@@ -51,10 +52,11 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
         db?.insert(SETTINGS_TABLE, null, settingsValues)
 
         val gameDataValues = ContentValues()
-        gameDataValues.put(SCORE_COL, -1)
-        gameDataValues.put(ENEMY_NUMBER_COL, -1)
-        gameDataValues.put(LIVES_COL, -1f)
-        gameDataValues.put(POWERUPS_COL, -1)
+        gameDataValues.put(SCORE_COL, 0)
+        gameDataValues.put(ENEMY_NUMBER_COL, 2)
+        gameDataValues.put(LIVES_COL, 3)
+        gameDataValues.put(LEVEL_COL, 1)
+        gameDataValues.put(RESUMABLEGAME_COL, 0)
         db?.insert(GAME_TABLE, null, gameDataValues)
 
         val customizationsValues = ContentValues()
@@ -111,13 +113,14 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
      * Questa funzione permette di aggiornare i valori dei dati di gioco,
      * aggiornando l'unica riga esistente.
      */
-    fun updateGameData(score: Int, lives: Float, enemies: Int, powerups: Int) {
+    fun updateGameData(score: Int, lives: Int, enemies: Int, level: Int, resumableGame: Int) {
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(SCORE_COL, score)
         contentValues.put(LIVES_COL, lives)
         contentValues.put(ENEMY_NUMBER_COL, enemies)
-        contentValues.put(POWERUPS_COL, powerups)
+        contentValues.put(LEVEL_COL, level)
+        contentValues.put(RESUMABLEGAME_COL, resumableGame)
 
         val result = db.update(GAME_TABLE, contentValues, null, null)
         // TODO: sostituire le stringhe delle toast con quelle di strings.xml
@@ -132,21 +135,24 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
      */
     fun readGameData(): GameData {
         val score: Int
-        val lives: Float
+        val lives: Int
         val enemies: Int
-        val powerups: Int
+        val level: Int
+        val resumableGame: Int
 
         val db = this.readableDatabase
         val query = "SELECT * FROM $GAME_TABLE"
         val result = db.rawQuery(query, null)
         result.moveToFirst()
         score = result.getInt(result.getColumnIndex(SCORE_COL))
-        lives = result.getFloat(result.getColumnIndex(LIVES_COL))
+        lives = result.getInt(result.getColumnIndex(LIVES_COL))
         enemies = result.getInt(result.getColumnIndex(ENEMY_NUMBER_COL))
-        powerups = result.getInt(result.getColumnIndex(POWERUPS_COL))
+        level = result.getInt(result.getColumnIndex(LEVEL_COL))
+        resumableGame = result.getInt(result.getColumnIndex(RESUMABLEGAME_COL))
+
 
         result.close()
-        return GameData(score, lives, enemies, powerups)
+        return GameData(score, lives, enemies, level, resumableGame)
     }
 
     fun updateCustomization(ship: Int, color: Int) {

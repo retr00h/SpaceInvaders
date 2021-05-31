@@ -7,15 +7,8 @@ import android.graphics.Rect
 
 class Enemy(context: Context, width: Int, height: Int) {
 
-    val length = width
-
     val h = height/4
     val w = width/10
-
-    var x = (width*0.45).toInt()
-    var y = (height*0.75).toInt()
-
-    val shipSpeed = width/10
 
     val context = context
 
@@ -23,15 +16,16 @@ class Enemy(context: Context, width: Int, height: Int) {
     var enemyHitboxList = mutableListOf<Rect>()
 
     val bitmap = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_playership_1_foreground)
-    var left = bitmap.width
-    val top = bitmap.height
-    var right = bitmap.width
-    val bottom = bitmap.height
+    val mBitmap = Bitmap.createScaledBitmap(bitmap, h, w, false)
+    var left = mBitmap.width
+    val top = mBitmap.height
+    var right = mBitmap.width
+    val bottom = mBitmap.height
     var enemyHitbox = Rect(left, top, right, bottom)
 
     fun addEnemy(number: Int){
         for(i in 1..number) {
-            enemyList.add(bitmap)
+            enemyList.add(mBitmap)
             enemyHitbox = Rect(left, top, right, bottom)
             enemyHitboxList.add(enemyHitbox)
             setNextPosition()
@@ -72,6 +66,10 @@ class Enemy(context: Context, width: Int, height: Int) {
         }
         enemyList = tempEnemyList
         enemyHitboxList = tempHitboxList
+        return enemyList.size
+    }
+
+    fun getNumEnemy(): Int{
         return enemyList.size
     }
 

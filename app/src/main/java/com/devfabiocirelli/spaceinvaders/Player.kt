@@ -21,19 +21,6 @@ class Player(context: Context, width: Int, height: Int) {
 
     val dataBaseHelper = DataBaseHelper(context)
 
-//    var top = (height*0.2).toInt()
-//    var bottom = (height*0.3).toInt()
-//    var left = (width*0.4).toInt()
-//    var right = (height*0.3).toInt()
-//    var rect = Rect(left, top, right, bottom)
-//
-//
-//    var bl = 400
-//    var bt = top
-//    var br = 500
-//    var bb = 300
-//    var bullet = Rect(bl, bt, br,bb)
-
     val selectedCustom = dataBaseHelper.readCustomization()
 
     var selectedShipColor = when(selectedCustom.color) {
@@ -67,8 +54,9 @@ class Player(context: Context, width: Int, height: Int) {
 
     var playerHitBox = Rect(left, top, right, bottom)
 
-    var bLeft = x + (mShipBitmap.width*0.4).toInt()
-    var bRight = x + (mShipBitmap.width*0.6).toInt()
+    var bLeft = x + (mShipBitmap.width*0.45).toInt()
+    var bRight = x + (mShipBitmap.width*0.55).toInt()
+    var btop = y + (mShipBitmap.height*0.50).toInt()
 
 
     fun updatePlayerPosition(direction: Int) {
@@ -84,8 +72,8 @@ class Player(context: Context, width: Int, height: Int) {
             playerHitBox.left = x + (mShipBitmap.width*0.2).toInt()
             playerHitBox.right = x + (mShipBitmap.width*0.8).toInt()
             //aggiornamento coordinate proiettile
-            bLeft = x + (mShipBitmap.width*0.4).toInt()
-            bRight = x + (mShipBitmap.width*0.6).toInt()
+            bLeft = x + (mShipBitmap.width*0.45).toInt()
+            bRight = x + (mShipBitmap.width*0.55).toInt()
 
         } else {
             Log.i("Player", "Fine mappa")
@@ -95,7 +83,7 @@ class Player(context: Context, width: Int, height: Int) {
     var bulletList = mutableListOf<Rect>()
 
     fun addBullet(){
-        bulletList.add(Rect(bLeft,top,bRight,bottom))
+        bulletList.add(Rect(bLeft,btop,bRight,bottom))
     }
 
     fun fire(): Int{

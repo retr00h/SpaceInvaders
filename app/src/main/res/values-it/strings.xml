@@ -20,4 +20,7 @@
     <string name="SpaceshipModel">Astronave:</string>
     <string name="selectedColor">Colore:</string>
     <string name="Fire">Spara</string>
+    <string name="LevelText">"Livello "</string>
+    <string name="livesText">"Vite "</string>
+    <string name="scoreText">"Punteggio "</string>
 </resources>

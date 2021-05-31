@@ -42,7 +42,7 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
             // se uno qualunque dei dati di gioco equivale a -1, non c'è una partita salvata,
             // quindi se ne può iniziare direttamente una nuova.
             // se invece ci sono dati salvati, viene richiesta una conferma
-            if (mainActivity.gameData.enemies == -1) {
+            if (mainActivity.gameData.resumableGame == 0) {
                 startGame()
             } else {
                 // visualizza il dialog
@@ -66,7 +66,7 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         resumeBtn.setOnClickListener{
             // se uno qualunque dei dati di gioco equivale a -1, non c'è una partita salvata,
             // quindi non si può riprendere una partita salvata
-            if (mainActivity.gameData.enemies == -1) {
+            if (mainActivity.gameData.resumableGame == 1) {
                 Toast.makeText(context, getString(R.string.noSavedGameAvailable), Toast.LENGTH_SHORT).show()
             } else {
                 startGame()

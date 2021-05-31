@@ -16,6 +16,7 @@ class Field: View {
     var playerShip: Player? = null
     var enemy: Enemy? = null
     var start = false
+    var numEnemy = 0
 
     constructor(context: Context?) : super(context){
         init(null)
@@ -105,6 +106,9 @@ class Field: View {
 
 
 
+    fun generateEnemy(n: Int){
+        numEnemy = n
+    }
 
 
     fun onClickUpdateRight(){
@@ -137,22 +141,25 @@ class Field: View {
         playerShip!!.addBullet()
     }
 
+
+    //all'avvio del gioco i nemici si spostano verso destra
     var enemyPos = 1
     var direction = 1
 
-    fun enemyUpdatePosition(ok: Boolean){
-        if(ok) {
+    fun enemyUpdatePosition(){
             direction = enemy!!.updatePosition(enemyPos)
-
             if (direction >= width) {
                 enemyPos = 0
             }
             if (direction <= 0) {
                 enemyPos = 1
             }
-        }
     }
-//
+
+    fun getEnemy(): Int{
+        return enemy!!.getNumEnemy()
+    }
+
 }
 
 

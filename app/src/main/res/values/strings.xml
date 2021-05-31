@@ -23,4 +23,7 @@
     <string name="SpaceshipModel">Spaceship:</string>
     <string name="selectedColor">Color:</string>
     <string name="Fire">Fire</string>
+    <string name="LevelText">"Level "</string>
+    <string name="livesText">"Lives "</string>
+    <string name="scoreText">"Score "</string>
 </resources>
