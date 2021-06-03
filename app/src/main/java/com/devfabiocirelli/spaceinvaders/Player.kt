@@ -24,12 +24,12 @@ class Player(context: Context, width: Int, height: Int) {
     val selectedCustom = dataBaseHelper.readCustomization()
 
     var selectedShipColor = when(selectedCustom.color) {
-        0 -> R.color.green
-        1 -> R.color.blue
-        2 -> R.color.red
-        3 -> R.color.grey
-        4 -> R.color.darkGrey
-        else -> R.color.white
+        0 -> Color.GREEN
+        1 -> Color.BLUE
+        2 -> Color.RED
+        3 -> Color.GRAY
+        4 -> Color.YELLOW
+        else -> Color.WHITE
     }
 
     private var selectedShip = when(selectedCustom.ship){
@@ -40,13 +40,10 @@ class Player(context: Context, width: Int, height: Int) {
         else -> R.mipmap.ic_playership_1_foreground
     }
 
-    //TODO: controllare
-    val ship = setShip(selectedShip, selectedShipColor)
-
-    val shipBitmap =  BitmapFactory.decodeResource(context.resources, ship)
+    val shipBitmap =  BitmapFactory.decodeResource(context.resources, selectedShip)
     val mShipBitmap =  Bitmap.createScaledBitmap(shipBitmap, h, w, false)
 
-    //Le seguenti coordinate vengono utilizzate anche per i proiettili
+    //Le seguenti coordinate vengono utilizzate per la hitbox del giocatore e per i proiettili
     var top = y + (mShipBitmap.height*0.3).toInt()
     var bottom= y + (mShipBitmap.height*0.8).toInt()
     val left = x + (mShipBitmap.width*0.2).toInt()
@@ -105,15 +102,6 @@ class Player(context: Context, width: Int, height: Int) {
         bullet.bottom -= 20
 
         return bullet.bottom
-
-    }
-
-
-    //TODO: da controllare
-    //Imposta il colore dell'astronave
-    private fun setShip(selectedShip: Int, selectedColor: Int): Int{
-
-        return selectedShip
 
     }
 

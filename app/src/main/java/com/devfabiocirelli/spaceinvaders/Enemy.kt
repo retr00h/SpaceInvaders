@@ -17,11 +17,12 @@ class Enemy(context: Context, width: Int, height: Int) {
 
     val bitmap = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_playership_1_foreground)
     val mBitmap = Bitmap.createScaledBitmap(bitmap, h, w, false)
-    var left = mBitmap.width
-    val top = mBitmap.height
-    var right = mBitmap.width
-    val bottom = mBitmap.height
+    var left = (mBitmap.width*0.1).toInt()
+    val top = (mBitmap.height*0.3).toInt()
+    var right = (mBitmap.width*0.9).toInt()
+    val bottom = (mBitmap.height*0.8).toInt()
     var enemyHitbox = Rect(left, top, right, bottom)
+    var noEnemy = false
 
     fun addEnemy(number: Int){
         for(i in 1..number) {
@@ -43,17 +44,28 @@ class Enemy(context: Context, width: Int, height: Int) {
                     h.left += (w * 0.2).toInt()
                     h.right += (w * 0.2).toInt()
                 }
-                return enemyHitboxList[enemyHitboxList.size-1].right
+                if(enemyHitboxList.size-1 < 0){
+                    noEnemy = true
+                    return -1
+                } else{
+                    return enemyHitboxList[enemyHitboxList.size-1].right
+                }
+
             } else {
                 for (h: Rect in enemyHitboxList) {
                     h.left -= (w * 0.2).toInt()
                     h.right -= (w * 0.2).toInt()
                 }
-                return enemyHitboxList[0].left
+                if(enemyHitboxList.size-1 < 0) {
+                    noEnemy = true
+                    return -1
+                } else {
+                    return enemyHitboxList[0].left
+                }
             }
     }
 
-    fun compactList(enemyHitbox: Rect, enemyPosInList: Int): Int{
+    fun compactEnemyList(enemyHitbox: Rect, enemyPosInList: Int){
         var tempHitboxList = mutableListOf<Rect>()
         var tempEnemyList = mutableListOf<Bitmap>()
         var i = 0
@@ -66,7 +78,6 @@ class Enemy(context: Context, width: Int, height: Int) {
         }
         enemyList = tempEnemyList
         enemyHitboxList = tempHitboxList
-        return enemyList.size
     }
 
     fun getNumEnemy(): Int{

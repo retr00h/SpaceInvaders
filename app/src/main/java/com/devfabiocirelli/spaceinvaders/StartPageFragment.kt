@@ -2,6 +2,7 @@ package com.devfabiocirelli.spaceinvaders
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,7 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
                 // non viene annullato, ma persiste
                 builder.setCancelable(false)
                 builder.setPositiveButton(getString(R.string.alertPositiveButton)) { _: DialogInterface, _: Int ->
+                    mainActivity.dataBaseHelper.updateGameData(0, 3, 2, 1, 1)
                     startGame()
                 }
                 builder.setNegativeButton(getString(R.string.alertNegativeButton)) { _: DialogInterface, _: Int ->}
@@ -66,7 +68,8 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         resumeBtn.setOnClickListener{
             // se uno qualunque dei dati di gioco equivale a -1, non c'è una partita salvata,
             // quindi non si può riprendere una partita salvata
-            if (mainActivity.gameData.resumableGame == 1) {
+            if (mainActivity.gameData.resumableGame == 0) {
+                Log.i("CIAOO", "${mainActivity.gameData.resumableGame}")
                 Toast.makeText(context, getString(R.string.noSavedGameAvailable), Toast.LENGTH_SHORT).show()
             } else {
                 startGame()

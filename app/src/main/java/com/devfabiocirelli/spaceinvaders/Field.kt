@@ -3,9 +3,7 @@ package com.devfabiocirelli.spaceinvaders
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import kotlin.properties.Delegates
 
 class Field: View {
 
@@ -17,6 +15,8 @@ class Field: View {
     var enemy: Enemy? = null
     var start = false
     var numEnemy = 0
+    var points = 0
+    var colpito = false
 
     constructor(context: Context?) : super(context){
         init(null)
@@ -37,9 +37,6 @@ class Field: View {
         }
 
     }
-    //var colpito = false
-
-    var i: Int = 0
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -50,16 +47,18 @@ class Field: View {
             playerShip = Player(context, width, height)
         }
 
+        var i = 0
 
         if(enemy == null){
             enemy = Enemy(context, width, height)
-            enemy!!.addEnemy(5)
+            enemy!!.addEnemy(numEnemy)
         }
 
-        paint.setColor(Color.BLACK)
         //disegna tutti i nemici presenti in enemyList
         for(e: Bitmap in enemy!!.enemyList){
+            paint.setColor(Color.TRANSPARENT)
             canvas.drawRect(enemy!!.enemyHitboxList[i], paint)
+            paint.setColor(Color.BLACK)
             canvas.drawBitmap(e, (enemy!!.enemyHitboxList[i].left).toFloat(), (height/100).toFloat(), paint)
             i++
             invalidate()
@@ -67,12 +66,10 @@ class Field: View {
 
         //setta start a true dopo aver disegnato i nemici per animarli nel gameFragment
         start = true
-        i = 0
-
 
         //Disegna il giocatore e la sua hitbox
         paint.setColor(Color.TRANSPARENT)
-        //canvas.drawRect(playerShip!!.playerHitBox, paint)
+        canvas.drawRect(playerShip!!.playerHitBox, paint)
         paint.setColor(Color.BLACK)
         canvas.drawBitmap(playerShip!!.mShipBitmap, (playerShip!!.x).toFloat(), (playerShip!!.y).toFloat(), paint)
 
@@ -80,19 +77,16 @@ class Field: View {
         //quindi viene invalidato il canvas e quindi ridisegnato, a questo punto può entrare nell'if e disegnare il proiettile sparato
         //questo ciclo viene iterato finchè il proiettile o entra in collisione con un personaggio, o arriva alla fine dello schermo
 
-
         if(fire) {
-            paint.setColor(Color.RED)
+            paint.setColor(playerShip!!.selectedShipColor)
             for(bullet: Rect in playerShip!!.bulletList) {
                 var pos = 0
                 for (enemyHitbox: Rect in enemy!!.enemyHitboxList) {
                     if (bullet.intersect(enemyHitbox)) {
+                        points = 50
+                        colpito = true
                         playerShip!!.compactBulletList(bullet)
-                        var remaining = enemy!!.compactList(enemyHitbox, pos)
-                        if(remaining == 0){
-                            start = false
-                            break
-                        }
+                        enemy!!.compactEnemyList(enemyHitbox, pos)
                     } else {
                         canvas.drawRect(bullet, paint)
                     }
@@ -152,14 +146,17 @@ class Field: View {
                 enemyPos = 0
             }
             if (direction <= 0) {
-                enemyPos = 1
+                if(enemy!!.noEnemy){
+                    start = false
+                } else {
+                    enemyPos = 1
+                }
             }
     }
 
     fun getEnemy(): Int{
         return enemy!!.getNumEnemy()
     }
-
 }
 
 

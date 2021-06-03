@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         conf.locale = if (settings.locale.startsWith("en")) Locale.ENGLISH else Locale.ITALIAN
         resources.updateConfiguration(conf, dm)
 
-        gameFragment = GameFragment(this, gameData)
+        gameFragment = GameFragment(this)
 
         // inserisce l'istanza di startPageFragment nel contentFragment e la visualizza
         val fragmentManager = supportFragmentManager
@@ -92,4 +92,29 @@ class MainActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
+
+    fun scoreFragment(){
+        val nextLevelFragment = ScoreFragment(this)
+        val fragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.contentFragment, nextLevelFragment)
+        transaction.commit()
+    }
+
+    fun gameFragment(){
+        gameFragment = GameFragment(this)
+        val fragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.contentFragment, gameFragment)
+        transaction.commit()
+    }
+
+    fun startPageFragment(){
+        val fragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.contentFragment, startPageFragment)
+        transaction.commit()
+    }
+
+
 }

@@ -23,4 +23,8 @@
     <string name="LevelText">"Livello "</string>
     <string name="livesText">"Vite "</string>
     <string name="scoreText">"Punteggio "</string>
+    <string name="CompletedText">Completato!</string>
+    <string name="nextLevelTextButton">Prossimo livello</string>
+    <string name="gameCompleted">Gioco completato!</string>
+    <string name="HomePage">Pagina iniziale</string>
 </resources>
