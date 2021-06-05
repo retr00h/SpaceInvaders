@@ -18,7 +18,7 @@
     <string name="dbCustomUpdateOk">Personalizzazioni aggiornate!</string>
     <string name="currentSelectedCustomization">Personalizzazione selezionate</string>
     <string name="SpaceshipModel">Astronave:</string>
-    <string name="selectedColor">Colore:</string>
+    <string name="selectedColor">Colore proiettile:</string>
     <string name="Fire">Spara</string>
     <string name="LevelText">"Livello "</string>
     <string name="livesText">"Vite "</string>

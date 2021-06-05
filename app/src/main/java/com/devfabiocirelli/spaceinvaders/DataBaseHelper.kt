@@ -29,7 +29,7 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
 
     val CUSTOMIZATION_TABLE =  "customizations"
     val SHIP_COL = "spaceShips"
-    val COLOR_COL = "spaceShipColors"
+    val COLOR_COL = "bulletColor"
 
     /**
      * Questa funzione viene eseguita la prima volta che questa classe viene istanziata,

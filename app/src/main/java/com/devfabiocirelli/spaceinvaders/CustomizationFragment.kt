@@ -1,7 +1,6 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,7 +43,7 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
                 R.color.blue,
                 R.color.red,
                 R.color.grey,
-                R.color.darkGrey,
+                R.color.yellow,
                 R.color.white
         )
 
@@ -53,7 +52,7 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
 
         //Popola le listView con le immagini e i colori disponibili
         list_view_ship.adapter = MyAdapter(requireContext(), ship, R.layout.ship_model_view)
-        list_view_color.adapter = MyAdapter(requireContext(), colors, R.layout.ship_color_view)
+        list_view_color.adapter = MyAdapter(requireContext(), colors, R.layout.bulett_color_view)
 
         //I due listener ottengono la posizione selezionata dall'utente e aggiornano nel database
         //le personalizzazioni scelte

@@ -23,7 +23,7 @@ class Player(context: Context, width: Int, height: Int) {
 
     val selectedCustom = dataBaseHelper.readCustomization()
 
-    var selectedShipColor = when(selectedCustom.color) {
+    var bulletColor = when(selectedCustom.color) {
         0 -> Color.GREEN
         1 -> Color.BLUE
         2 -> Color.RED
@@ -83,6 +83,7 @@ class Player(context: Context, width: Int, height: Int) {
         bulletList.add(Rect(bLeft,btop,bRight,bottom))
     }
 
+    //il seguente metodo è invocato da onClickFire della classe Field
     fun fire(): Int{
 
         var iterator = bulletList.iterator()

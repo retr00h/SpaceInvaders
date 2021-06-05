@@ -1,7 +1,6 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.content.Context
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,7 @@ class MyAdapter(private val context: Context, val data: Array<Int>, val layout: 
         //In base al layout imposta la view
         if (newView != null) {
 
-            if(layout == R.layout.ship_color_view) {
+            if(layout == R.layout.bulett_color_view) {
                 val imageColor = newView.findViewById<customColorView>(R.id.colorView)
                 imageColor.setColor(data[position])
             }

@@ -4,8 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
+import android.util.Log
 
 class Enemy(context: Context, width: Int, height: Int) {
+
+    val height = height
 
     val h = height/4
     val w = width/10
@@ -82,6 +85,43 @@ class Enemy(context: Context, width: Int, height: Int) {
 
     fun getNumEnemy(): Int{
         return enemyList.size
+    }
+
+    //Metodi gestione proiettili dei nemici
+
+    var bulletList = mutableListOf<Rect>()
+
+    //come argomento ricevo un int per idicare quale dei nemici ha sparato per ottenere le sue coordinate e disegnare il rpoiettile
+    //in modo che parta dal nemico che lo ha sparato
+    fun addBullet(i: Int){
+        if(i < enemyHitboxList.size) {
+            var enemy = enemyHitboxList[i]
+            var bullet = Rect(
+                (enemy.left + (enemy.left*0.5).toInt()),
+                enemy.top,
+                (enemy.right - (enemy.right*0.9).toInt()),
+                enemy.bottom
+            )
+            bulletList.add(bullet)
+        }
+    }
+
+    private fun updateBulletPosition(bullet: Rect): Int{
+        bullet.top += 20
+        bullet.bottom += 20
+
+        return bullet.bottom
+    }
+
+    fun fire(){
+        var iterator = bulletList.iterator()
+        while(iterator.hasNext()){
+            val item = iterator.next()
+            var fine = updateBulletPosition(item)
+            if(fine >= height){
+                iterator.remove()
+            }
+        }
     }
 
 }

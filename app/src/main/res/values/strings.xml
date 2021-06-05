@@ -21,7 +21,7 @@
     <string name="dbCustomUpdateOk">Customizations updated!</string>
     <string name="currentSelectedCustomization">Current customizations selected</string>
     <string name="SpaceshipModel">Spaceship:</string>
-    <string name="selectedColor">Color:</string>
+    <string name="selectedColor">Bullet color:</string>
     <string name="Fire">Fire</string>
     <string name="LevelText">"Level "</string>
     <string name="livesText">"Lives "</string>
