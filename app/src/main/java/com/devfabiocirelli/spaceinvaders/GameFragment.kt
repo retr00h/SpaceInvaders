@@ -68,51 +68,49 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
             var timing = 0
             val random = Random
             while (true) {
-                //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 100 millisecondi
-                    try {
-                        if (fire) {
-                            //if (timing % 2 == 0) {
-                                var fine = gameField.onClickFire()
-                                gameField.invalidate()
-                                if (fine == 0) {
-                                    fire = false
-                                }
-                            //timing = 0
-                            //}
-                        }
-                        timing++
-                        if (timing % 2 == 0) {
-                            if (gameField.start) {
-                                gameField.enemyUpdatePosition()
+            //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 100 millisecondi
+                try {
+                    if (fire) {
+                        //if (timing % 2 == 0) {
+                            var fine = gameField.onClickFire()
+                            gameField.invalidate()
+                            if (fine == 0) {
+                                fire = false
                             }
-                            timing = 0
+                        //timing = 0
+                        //}
+                    }
+                    timing++
+                    if (timing % 2 == 0) {
+                        if (gameField.start) {
+                            gameField.enemyUpdatePosition()
                         }
+                        timing = 0
+                    }
 
-                        if(gameField.colpito) {
-                            gameField.colpito = false
-                            score += gameField.points
-                            setNewScore(score)
-                        }
+                    if(gameField.colpito) {
+                        gameField.colpito = false
+                        score += gameField.points
+                        setNewScore(score)
+                    }
 
-                        if(gameField.start){
-                            gameField.enemyFire(random.nextInt(0, gameField.numEnemy))
-                        }
+                    if(gameField.start){
+                        gameField.enemyFire(random.nextInt(0, gameField.numEnemy))
+                    }
 
-                        Thread.sleep(100)
+                    Thread.sleep(100)
 
-                        if(gameField.getEnemy() <= 0){
-                            score += gameField.points
-                            setNewScore(score)
-                            mainActivity.scoreFragment()
-                            setEnemies(numEnemies)
-                            break
-                        }
-
-                    } catch (e :NullPointerException) {
+                    if(gameField.getEnemy() <= 0){
+                        score += gameField.points
+                        setNewScore(score)
+                        mainActivity.scoreFragment()
+                        setEnemies(numEnemies)
                         break
                     }
 
-
+                } catch (e :NullPointerException) {
+                    break
+                }
             }
         }
 
