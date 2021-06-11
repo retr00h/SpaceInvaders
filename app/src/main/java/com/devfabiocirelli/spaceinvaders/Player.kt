@@ -58,13 +58,12 @@ class Player(context: Context, width: Int, height: Int) {
 
     fun updatePlayerPosition(direction: Int) {
 
-        if (right <= length && left >= 0) {
+        if (playerHitBox.right <= length && playerHitBox.left >= 0) {
             if (direction == 1) { //Se uguale a 1 si sposta a destra, altrimenti a sinistra
                 x += shipSpeed
             } else {
                 x -= shipSpeed
             }
-
             //aggiornamento coordinate hitbox giocatore
             playerHitBox.left = x + (mShipBitmap.width*0.2).toInt()
             playerHitBox.right = x + (mShipBitmap.width*0.8).toInt()
@@ -72,8 +71,6 @@ class Player(context: Context, width: Int, height: Int) {
             bLeft = x + (mShipBitmap.width*0.45).toInt()
             bRight = x + (mShipBitmap.width*0.55).toInt()
 
-        } else {
-            Log.i("Player", "Fine mappa")
         }
     }
 

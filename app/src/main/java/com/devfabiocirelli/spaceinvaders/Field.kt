@@ -91,9 +91,11 @@ class Field: View {
         paint.setColor(Color.BLACK)
         canvas.drawBitmap(playerShip!!.mShipBitmap, (playerShip!!.x).toFloat(), (playerShip!!.y).toFloat(), paint)
 
-        //al primo ciclo dell'onDraw la variabile fire è settata a false, al click del bottone per sparare viene settata a true
-        //quindi viene invalidato il canvas e quindi ridisegnato, a questo punto può entrare nell'if e disegnare il proiettile sparato
-        //questo ciclo viene iterato finchè il proiettile o entra in collisione con un personaggio, o arriva alla fine dello schermo
+        /*
+        al primo ciclo dell'onDraw la variabile fire è settata a false, al click del bottone per sparare viene settata a true
+        quindi viene invalidato il canvas e quindi ridisegnato, a questo punto può entrare nell'if e disegnare il proiettile sparato
+        questo ciclo viene iterato finchè il proiettile o entra in collisione con un personaggio, o arriva alla fine dello schermo
+         */
         if(fire) {
             paint.setColor(playerShip!!.bulletColor)
             for(bullet: Rect in playerShip!!.bulletList) {
@@ -120,8 +122,10 @@ class Field: View {
         numEnemy = n
     }
 
-    //metodi di gestione del movimento del giocatore,
-    //invocano dei metodi della classe Player
+    /*
+    metodi di gestione del movimento del giocatore,
+    invocano dei metodi della classe Player
+     */
     fun onClickUpdateRight(){
         playerShip?.updatePlayerPosition(1)
         invalidate()
@@ -135,8 +139,9 @@ class Field: View {
     var p = 2
 
     fun onClickFire(): Int{
-        //se p è maggiore di zero vuol dire che ci sono dei proiettili nella lista dei proiettili sparati dal giocatore
-        //e quindi dovranno essere diegnati sul canvas
+        /*se p è maggiore di zero vuol dire che ci sono dei proiettili nella lista dei proiettili sparati dal giocatore
+        e quindi dovranno essere diegnati sul canvas
+         */
         if (p > 0) {
             fire = true
             p = playerShip!!.fire()

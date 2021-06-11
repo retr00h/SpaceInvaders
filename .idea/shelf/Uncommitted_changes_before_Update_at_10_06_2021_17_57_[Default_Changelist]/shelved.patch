@@ -1,0 +1,247 @@
+Index: app/src/main/java/com/devfabiocirelli/spaceinvaders/Enemy.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.devfabiocirelli.spaceinvaders\r\n\r\nimport android.content.Context\r\nimport android.graphics.Bitmap\r\nimport android.graphics.BitmapFactory\r\nimport android.graphics.Rect\r\nimport android.util.Log\r\n\r\nclass Enemy(context: Context, width: Int, height: Int) {\r\n\r\n    val height = height\r\n\r\n    val h = height/4\r\n    val w = width/10\r\n\r\n    val context = context\r\n\r\n    var enemyList = mutableListOf<Bitmap>()\r\n    var enemyHitboxList = mutableListOf<Rect>()\r\n\r\n    val bitmap = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_playership_1_foreground)\r\n    val mBitmap = Bitmap.createScaledBitmap(bitmap, h, w, false)\r\n    var left = (mBitmap.width*0.1).toInt()\r\n    val top = (mBitmap.height*0.3).toInt()\r\n    var right = (mBitmap.width*0.9).toInt()\r\n    val bottom = (mBitmap.height*0.8).toInt()\r\n    var enemyHitbox = Rect(left, top, right, bottom)\r\n    var noEnemy = false\r\n\r\n    fun addEnemy(number: Int){\r\n        for(i in 1..number) {\r\n            enemyList.add(mBitmap)\r\n            enemyHitbox = Rect(left, top, right, bottom)\r\n            enemyHitboxList.add(enemyHitbox)\r\n            setNextPosition()\r\n        }\r\n    }\r\n\r\n    fun setNextPosition(){\r\n        left += (w*1.3).toInt()\r\n        right += (w*1.3).toInt()\r\n    }\r\n\r\n    fun updatePosition(direction: Int): Int {\r\n            if (direction == 1) {\r\n                for (h: Rect in enemyHitboxList) {\r\n                    h.left += (w * 0.2).toInt()\r\n                    h.right += (w * 0.2).toInt()\r\n                }\r\n                if(enemyHitboxList.size-1 < 0){\r\n                    noEnemy = true\r\n                    return -1\r\n                } else{\r\n                    return enemyHitboxList[enemyHitboxList.size-1].right\r\n                }\r\n\r\n            } else {\r\n                for (h: Rect in enemyHitboxList) {\r\n                    h.left -= (w * 0.2).toInt()\r\n                    h.right -= (w * 0.2).toInt()\r\n                }\r\n                if(enemyHitboxList.size-1 < 0) {\r\n                    noEnemy = true\r\n                    return -1\r\n                } else {\r\n                    return enemyHitboxList[0].left\r\n                }\r\n            }\r\n    }\r\n\r\n    fun compactEnemyList(enemyHitbox: Rect, enemyPosInList: Int){\r\n        var tempHitboxList = mutableListOf<Rect>()\r\n        var tempEnemyList = mutableListOf<Bitmap>()\r\n        var i = 0\r\n        for(rect: Rect in enemyHitboxList){\r\n            if(rect != enemyHitbox && i != enemyPosInList){\r\n                tempHitboxList.add(rect)\r\n                tempEnemyList.add(enemyList[i])\r\n            }\r\n            i++\r\n        }\r\n        enemyList = tempEnemyList\r\n        enemyHitboxList = tempHitboxList\r\n    }\r\n\r\n    fun getNumEnemy(): Int{\r\n        return enemyList.size\r\n    }\r\n\r\n    //Metodi gestione proiettili dei nemici\r\n\r\n    var bulletList = mutableListOf<Rect>()\r\n\r\n    //come argomento ricevo un int per idicare quale dei nemici ha sparato per ottenere le sue coordinate e disegnare il rpoiettile\r\n    //in modo che parta dal nemico che lo ha sparato\r\n    fun addBullet(i: Int){\r\n        if(i < enemyHitboxList.size) {\r\n            var enemy = enemyHitboxList[i]\r\n            var bullet = Rect(\r\n                (enemy.left + (enemy.left*0.5).toInt()),\r\n                enemy.top,\r\n                (enemy.right - (enemy.right*0.9).toInt()),\r\n                enemy.bottom\r\n            )\r\n            bulletList.add(bullet)\r\n        }\r\n    }\r\n\r\n    private fun updateBulletPosition(bullet: Rect): Int{\r\n        bullet.top += 20\r\n        bullet.bottom += 20\r\n\r\n        return bullet.bottom\r\n    }\r\n\r\n    fun fire(){\r\n        var iterator = bulletList.iterator()\r\n        while(iterator.hasNext()){\r\n            val item = iterator.next()\r\n            var fine = updateBulletPosition(item)\r\n            if(fine >= height){\r\n                iterator.remove()\r\n            }\r\n        }\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/devfabiocirelli/spaceinvaders/Enemy.kt	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
++++ app/src/main/java/com/devfabiocirelli/spaceinvaders/Enemy.kt	(date 1623339915779)
+@@ -5,6 +5,7 @@
+ import android.graphics.BitmapFactory
+ import android.graphics.Rect
+ import android.util.Log
++import kotlin.random.Random
+ 
+ class Enemy(context: Context, width: Int, height: Int) {
+ 
+@@ -18,8 +19,9 @@
+     var enemyList = mutableListOf<Bitmap>()
+     var enemyHitboxList = mutableListOf<Rect>()
+ 
+-    val bitmap = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_playership_1_foreground)
++    val bitmap = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_enemy_1_foreground)
+     val mBitmap = Bitmap.createScaledBitmap(bitmap, h, w, false)
++
+     var left = (mBitmap.width*0.1).toInt()
+     val top = (mBitmap.height*0.3).toInt()
+     var right = (mBitmap.width*0.9).toInt()
+@@ -29,7 +31,7 @@
+ 
+     fun addEnemy(number: Int){
+         for(i in 1..number) {
+-            enemyList.add(mBitmap)
++            enemyList.add(randomEnemy())
+             enemyHitbox = Rect(left, top, right, bottom)
+             enemyHitboxList.add(enemyHitbox)
+             setNextPosition()
+@@ -124,4 +126,18 @@
+         }
+     }
+ 
++    private fun randomEnemy(): Bitmap{
++
++        var enemyShipImage = when(Random.nextInt(1,3)){
++            1 -> R.mipmap.ic_enemy_2_foreground
++            2 -> R.mipmap.ic_enemy_3_foreground
++            else -> R.mipmap.ic_enemy_1_foreground
++        }
++
++        val bitmap = BitmapFactory.decodeResource(context.resources, enemyShipImage)
++        val mBitmap = Bitmap.createScaledBitmap(bitmap, h, w, false)
++
++        return mBitmap
++    }
++
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/devfabiocirelli/spaceinvaders/GameFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.devfabiocirelli.spaceinvaders\r\n\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.Button\r\nimport android.widget.TextView\r\nimport androidx.fragment.app.Fragment\r\nimport kotlinx.android.synthetic.main.fragment_game.*\r\nimport kotlin.concurrent.thread\r\nimport kotlin.random.Random\r\n\r\nclass GameFragment(val mainActivity: MainActivity) : Fragment() {\r\n    val TAG = \"GameFragment\"\r\n\r\n    lateinit var rightButton: Button\r\n    lateinit var leftButton: Button\r\n    lateinit var fireButton: Button\r\n    lateinit var rootView: View\r\n    lateinit var levelText: TextView\r\n    lateinit var livesTextView: TextView\r\n    lateinit var scoreText: TextView\r\n    var fire = false\r\n    var wichLevel = 0\r\n    var numEnemies = 0\r\n    var lives = 0\r\n    var score = 0\r\n\r\n    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {\r\n\r\n        rootView = inflater.inflate(R.layout.fragment_game, container, false)\r\n        rightButton = rootView.findViewById(R.id.rightButton)\r\n        leftButton = rootView.findViewById(R.id.leftButton)\r\n        fireButton = rootView.findViewById(R.id.fireButton)\r\n        levelText = rootView.findViewById(R.id.levelIntView)\r\n        livesTextView = rootView.findViewById(R.id.livesInt)\r\n        scoreText = rootView.findViewById(R.id.scoreIntView)\r\n\r\n        val gameData = mainActivity.dataBaseHelper.readGameData()\r\n\r\n        wichLevel = gameData.level\r\n        numEnemies = gameData.enemies\r\n        lives = gameData.lives\r\n        score = gameData.score\r\n\r\n        levelText.setText(\"${mainActivity.applicationContext.getString(R.string.LevelText)}: ${wichLevel}\")\r\n        livesTextView.setText(\"${mainActivity.applicationContext.getString(R.string.livesText)}: ${lives}\")\r\n        scoreText.setText(\"${mainActivity.applicationContext.getString(R.string.scoreText)}: ${score}\")\r\n\r\n        rightButton.setOnClickListener{\r\n            gameField.onClickUpdateRight()\r\n        }\r\n\r\n        leftButton.setOnClickListener{\r\n            gameField.onClickUpdateLeft()\r\n        }\r\n\r\n        fireButton.setOnClickListener{\r\n            gameField.onClickAddBullet()\r\n            fire = true\r\n            gameField.onClickFire()\r\n\r\n        }\r\n\r\n        thread(start = true) {\r\n            var timing = 0\r\n            val random = Random\r\n            while (true) {\r\n                //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 100 millisecondi\r\n                    try {\r\n                        if (fire) {\r\n                            //if (timing % 2 == 0) {\r\n                                var fine = gameField.onClickFire()\r\n                                gameField.invalidate()\r\n                                if (fine == 0) {\r\n                                    fire = false\r\n                                }\r\n                            //timing = 0\r\n                            //}\r\n                        }\r\n                        timing++\r\n                        if (timing % 2 == 0) {\r\n                            if (gameField.start) {\r\n                                gameField.enemyUpdatePosition()\r\n                            }\r\n                            timing = 0\r\n                        }\r\n\r\n                        if(gameField.colpito) {\r\n                            gameField.colpito = false\r\n                            score += gameField.points\r\n                            setNewScore(score)\r\n                        }\r\n\r\n                        if(gameField.start){\r\n                            gameField.enemyFire(random.nextInt(0, gameField.numEnemy))\r\n                        }\r\n\r\n                        Thread.sleep(100)\r\n\r\n                        if(gameField.getEnemy() <= 0){\r\n                            score += gameField.points\r\n                            setNewScore(score)\r\n                            mainActivity.scoreFragment()\r\n                            setEnemies(numEnemies)\r\n                            break\r\n                        }\r\n\r\n                    } catch (e :NullPointerException) {\r\n                        break\r\n                    }\r\n\r\n\r\n            }\r\n        }\r\n\r\n\r\n        return rootView\r\n\r\n\r\n\r\n    }\r\n\r\n    override fun onStart() {\r\n        super.onStart()\r\n        setEnemies(numEnemies)\r\n    }\r\n\r\n    override fun onPause() {\r\n        super.onPause()\r\n        mainActivity.dataBaseHelper.updateGameData(score, lives, gameField.getEnemy(), wichLevel, 1)\r\n\r\n    }\r\n\r\n    private fun setEnemies(enemies: Int){\r\n        gameField.generateEnemy(enemies)\r\n    }\r\n\r\n    private fun setNewScore(newScore: Int){\r\n        scoreText.post {\r\n            scoreText.setText(\"${mainActivity.applicationContext.getString(R.string.scoreText)}: ${newScore}\")\r\n        }\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/devfabiocirelli/spaceinvaders/GameFragment.kt	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
++++ app/src/main/java/com/devfabiocirelli/spaceinvaders/GameFragment.kt	(date 1623340629061)
+@@ -27,6 +27,7 @@
+     var numEnemies = 0
+     var lives = 0
+     var score = 0
++    var bloccaThread = false
+ 
+     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+ 
+@@ -70,6 +71,9 @@
+             while (true) {
+                 //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 100 millisecondi
+                     try {
++                        if(bloccaThread){
++                            break
++                        }
+                         if (fire) {
+                             //if (timing % 2 == 0) {
+                                 var fine = gameField.onClickFire()
+@@ -81,6 +85,10 @@
+                             //}
+                         }
+                         timing++
++                        /*
++                        la variabile timing serve per dare "velocita'" diverse agli elementi presenti sul canvas,
++                        timing % 2 == 0 ridisegna i nemici ogni due cicli (mentre i proiettili vengono ridisegnati ad ogni ciclo)
++                         */
+                         if (timing % 2 == 0) {
+                             if (gameField.start) {
+                                 gameField.enemyUpdatePosition()
+@@ -130,10 +138,17 @@
+ 
+     override fun onPause() {
+         super.onPause()
++        bloccaThread = true
+         mainActivity.dataBaseHelper.updateGameData(score, lives, gameField.getEnemy(), wichLevel, 1)
+ 
+     }
+ 
++    override fun onResume() {
++        super.onResume()
++        bloccaThread = false
++
++    }
++
+     private fun setEnemies(enemies: Int){
+         gameField.generateEnemy(enemies)
+     }
+Index: app/src/main/java/com/devfabiocirelli/spaceinvaders/Player.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.devfabiocirelli.spaceinvaders\r\n\r\nimport android.content.Context\r\nimport android.content.res.Resources\r\nimport android.graphics.*\r\nimport android.util.Log\r\n\r\nclass Player(context: Context, width: Int, height: Int) {\r\n\r\n    val length = width\r\n\r\n    val h = height/4\r\n    val w = width/10\r\n\r\n    var x = (width*0.45).toInt()\r\n    var y = (height*0.75).toInt()\r\n\r\n    val shipSpeed = width/300\r\n\r\n    val context = context\r\n\r\n    val dataBaseHelper = DataBaseHelper(context)\r\n\r\n    val selectedCustom = dataBaseHelper.readCustomization()\r\n\r\n    var bulletColor = when(selectedCustom.color) {\r\n        0 -> Color.GREEN\r\n        1 -> Color.BLUE\r\n        2 -> Color.RED\r\n        3 -> Color.GRAY\r\n        4 -> Color.YELLOW\r\n        else -> Color.WHITE\r\n    }\r\n\r\n    private var selectedShip = when(selectedCustom.ship){\r\n        0 -> R.mipmap.ic_playership_1_foreground\r\n        1 -> R.mipmap.ic_playership_2_foreground\r\n        2 -> R.mipmap.ic_playership_3_foreground\r\n        3 -> R.mipmap.ic_playership_4_foreground\r\n        else -> R.mipmap.ic_playership_1_foreground\r\n    }\r\n\r\n    val shipBitmap =  BitmapFactory.decodeResource(context.resources, selectedShip)\r\n    val mShipBitmap =  Bitmap.createScaledBitmap(shipBitmap, h, w, false)\r\n\r\n    //Le seguenti coordinate vengono utilizzate per la hitbox del giocatore e per i proiettili\r\n    var top = y + (mShipBitmap.height*0.3).toInt()\r\n    var bottom= y + (mShipBitmap.height*0.8).toInt()\r\n    val left = x + (mShipBitmap.width*0.2).toInt()\r\n    val right = x + (mShipBitmap.width*0.8).toInt()\r\n\r\n    var playerHitBox = Rect(left, top, right, bottom)\r\n\r\n    var bLeft = x + (mShipBitmap.width*0.45).toInt()\r\n    var bRight = x + (mShipBitmap.width*0.55).toInt()\r\n    var btop = y + (mShipBitmap.height*0.50).toInt()\r\n\r\n\r\n    fun updatePlayerPosition(direction: Int) {\r\n\r\n        if (right <= length && left >= 0) {\r\n            if (direction == 1) { //Se uguale a 1 si sposta a destra, altrimenti a sinistra\r\n                x += shipSpeed\r\n            } else {\r\n                x -= shipSpeed\r\n            }\r\n\r\n            //aggiornamento coordinate hitbox giocatore\r\n            playerHitBox.left = x + (mShipBitmap.width*0.2).toInt()\r\n            playerHitBox.right = x + (mShipBitmap.width*0.8).toInt()\r\n            //aggiornamento coordinate proiettile\r\n            bLeft = x + (mShipBitmap.width*0.45).toInt()\r\n            bRight = x + (mShipBitmap.width*0.55).toInt()\r\n\r\n        } else {\r\n            Log.i(\"Player\", \"Fine mappa\")\r\n        }\r\n    }\r\n\r\n    var bulletList = mutableListOf<Rect>()\r\n\r\n    fun addBullet(){\r\n        bulletList.add(Rect(bLeft,btop,bRight,bottom))\r\n    }\r\n\r\n    //il seguente metodo è invocato da onClickFire della classe Field\r\n    fun fire(): Int{\r\n\r\n        var iterator = bulletList.iterator()\r\n        while(iterator.hasNext()){\r\n            val item = iterator.next()\r\n            var fine = fireUpdate(item)\r\n            if(fine <= 0){\r\n                iterator.remove()\r\n            }\r\n        }\r\n        return bulletList.size\r\n    }\r\n\r\n    private fun fireUpdate(bullet: Rect): Int{\r\n\r\n        bullet.top -= 20\r\n        bullet.bottom -= 20\r\n\r\n        return bullet.bottom\r\n\r\n    }\r\n\r\n    fun compactBulletList(bullet: Rect){\r\n        var tempBulletList = mutableListOf<Rect>()\r\n        for(r: Rect in bulletList){\r\n            if(r != bullet){\r\n                tempBulletList.add(r)\r\n            }\r\n        }\r\n        bulletList = tempBulletList\r\n    }\r\n\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/devfabiocirelli/spaceinvaders/Player.kt	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
++++ app/src/main/java/com/devfabiocirelli/spaceinvaders/Player.kt	(date 1623337816922)
+@@ -58,13 +58,12 @@
+ 
+     fun updatePlayerPosition(direction: Int) {
+ 
+-        if (right <= length && left >= 0) {
++        if (playerHitBox.right <= length && playerHitBox.left >= 0) {
+             if (direction == 1) { //Se uguale a 1 si sposta a destra, altrimenti a sinistra
+                 x += shipSpeed
+             } else {
+                 x -= shipSpeed
+             }
+-
+             //aggiornamento coordinate hitbox giocatore
+             playerHitBox.left = x + (mShipBitmap.width*0.2).toInt()
+             playerHitBox.right = x + (mShipBitmap.width*0.8).toInt()
+@@ -72,8 +71,6 @@
+             bLeft = x + (mShipBitmap.width*0.45).toInt()
+             bRight = x + (mShipBitmap.width*0.55).toInt()
+ 
+-        } else {
+-            Log.i("Player", "Fine mappa")
+         }
+     }
+ 
+Index: app/src/main/java/com/devfabiocirelli/spaceinvaders/Field.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.devfabiocirelli.spaceinvaders\r\n\r\nimport android.content.Context\r\nimport android.graphics.*\r\nimport android.util.AttributeSet\r\nimport android.util.Log\r\nimport android.view.View\r\nimport kotlin.random.Random\r\n\r\nclass Field: View {\r\n\r\n    private val paint = Paint()\r\n    val TAG = \"activity\"\r\n    lateinit var canvas: Canvas\r\n    //la variabile fire serve per far sapere al canvas se disegnare  o meno i proiettili sparati dal giocatore\r\n    var fire: Boolean = false\r\n    //istanza della classe Player, classe dedicata al giocatore\r\n    var playerShip: Player? = null\r\n    //istanza della classe Enemy dedicata ai nemici\r\n    var enemy: Enemy? = null\r\n    //la variabile start indica se il gioco sia portito o meno al thread lanciato dal GameFragment\r\n    var start = false\r\n    var numEnemy = 0\r\n    var points = 0\r\n    //colpito serve al thread lanciato da GameFragment in modo che se il giocatore\r\n    //colpisce un nemico, il thread lo sappia e aggiorni il punteggio del giocatore\r\n    var colpito = false\r\n    //generatore di numeri random\r\n    val random = Random\r\n\r\n    constructor(context: Context?) : super(context){\r\n        init(null)\r\n    }\r\n\r\n    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs){\r\n        init(attrs)\r\n    }\r\n\r\n    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){\r\n        init(attrs)\r\n    }\r\n\r\n    private fun init(attrs: AttributeSet?){\r\n\r\n        setOnClickListener{\r\n            invalidate()\r\n        }\r\n\r\n    }\r\n\r\n    override fun onDraw(canvas: Canvas) {\r\n        super.onDraw(canvas)\r\n\r\n        this.canvas = canvas\r\n\r\n        if(playerShip == null) {\r\n            playerShip = Player(context, width, height)\r\n        }\r\n\r\n        var i = 0\r\n\r\n        if(enemy == null){\r\n            enemy = Enemy(context, width, height)\r\n            enemy!!.addEnemy(numEnemy)\r\n\r\n        }\r\n\r\n        //disegna tutti i nemici presenti in enemyList\r\n        for(e: Bitmap in enemy!!.enemyList){\r\n            paint.setColor(Color.RED)\r\n            canvas.drawRect(enemy!!.enemyHitboxList[i], paint)\r\n            paint.setColor(Color.BLACK)\r\n            canvas.drawBitmap(e, (enemy!!.enemyHitboxList[i].left).toFloat(), (height/100).toFloat(), paint)\r\n            i++\r\n            invalidate()\r\n        }\r\n        //se ci sono proiettili sparati dai nemici, vengono disegnati sul canvas\r\n        if(enemy!!.bulletList.size > 0) {\r\n            for (bullet: Rect in enemy!!.bulletList) {\r\n                paint.setColor(Color.RED)\r\n                canvas.drawRect(bullet, paint)\r\n            }\r\n        }\r\n\r\n        //setta start a true dopo aver disegnato i nemici per animarli nel gameFragment\r\n        start = true\r\n\r\n        //Disegna il giocatore e la sua hitbox\r\n        paint.setColor(Color.TRANSPARENT)\r\n        canvas.drawRect(playerShip!!.playerHitBox, paint)\r\n        paint.setColor(Color.BLACK)\r\n        canvas.drawBitmap(playerShip!!.mShipBitmap, (playerShip!!.x).toFloat(), (playerShip!!.y).toFloat(), paint)\r\n\r\n        //al primo ciclo dell'onDraw la variabile fire è settata a false, al click del bottone per sparare viene settata a true\r\n        //quindi viene invalidato il canvas e quindi ridisegnato, a questo punto può entrare nell'if e disegnare il proiettile sparato\r\n        //questo ciclo viene iterato finchè il proiettile o entra in collisione con un personaggio, o arriva alla fine dello schermo\r\n        if(fire) {\r\n            paint.setColor(playerShip!!.bulletColor)\r\n            for(bullet: Rect in playerShip!!.bulletList) {\r\n                var pos = 0\r\n                for (enemyHitbox: Rect in enemy!!.enemyHitboxList) {\r\n                    if (bullet.intersect(enemyHitbox)) {\r\n                        points = 50\r\n                        colpito = true\r\n                        playerShip!!.compactBulletList(bullet)\r\n                        enemy!!.compactEnemyList(enemyHitbox, pos)\r\n                    } else {\r\n                        canvas.drawRect(bullet, paint)\r\n                    }\r\n                    canvas.drawRect(bullet, paint)\r\n                    pos++\r\n                }\r\n            }\r\n                }\r\n\r\n            }\r\n\r\n    //genera il numero di nemici indicato da n\r\n    fun generateEnemy(n: Int){\r\n        numEnemy = n\r\n    }\r\n\r\n    //metodi di gestione del movimento del giocatore,\r\n    //invocano dei metodi della classe Player\r\n    fun onClickUpdateRight(){\r\n        playerShip?.updatePlayerPosition(1)\r\n        invalidate()\r\n    }\r\n\r\n    fun onClickUpdateLeft(){\r\n        playerShip?.updatePlayerPosition(0)\r\n        invalidate()\r\n    }\r\n\r\n    var p = 2\r\n\r\n    fun onClickFire(): Int{\r\n        //se p è maggiore di zero vuol dire che ci sono dei proiettili nella lista dei proiettili sparati dal giocatore\r\n        //e quindi dovranno essere diegnati sul canvas\r\n        if (p > 0) {\r\n            fire = true\r\n            p = playerShip!!.fire()\r\n            return 1\r\n        } else {\r\n            fire = false\r\n            p = 2\r\n            invalidate()\r\n            return 0\r\n        }\r\n    }\r\n\r\n    //aggiunge un proiettile ogni voltache l'utente preme sul bottone per sparare\r\n    fun onClickAddBullet(){\r\n        playerShip!!.addBullet()\r\n    }\r\n\r\n\r\n    //all'avvio del gioco i nemici si spostano verso destra\r\n    var enemyPos = 1\r\n    var direction = 1\r\n\r\n    fun enemyUpdatePosition(){\r\n            direction = enemy!!.updatePosition(enemyPos)\r\n            if (direction >= width) {\r\n                enemyPos = 0\r\n            }\r\n            if (direction <= 0) {\r\n                if(enemy!!.noEnemy){\r\n                    start = false\r\n                } else {\r\n                    enemyPos = 1\r\n                }\r\n            }\r\n    }\r\n\r\n    fun getEnemy(): Int{\r\n        return enemy!!.getNumEnemy()\r\n    }\r\n\r\n    //genero un Random per fare in modo che un nemico decida casualmente di sparare\r\n    fun enemyFire(i: Int){\r\n        if(random.nextInt(50) == 5){\r\n            enemy!!.addBullet(i)\r\n        }\r\n        enemy!!.fire()\r\n\r\n    }\r\n}\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/devfabiocirelli/spaceinvaders/Field.kt	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
++++ app/src/main/java/com/devfabiocirelli/spaceinvaders/Field.kt	(date 1623335687884)
+@@ -91,9 +91,11 @@
+         paint.setColor(Color.BLACK)
+         canvas.drawBitmap(playerShip!!.mShipBitmap, (playerShip!!.x).toFloat(), (playerShip!!.y).toFloat(), paint)
+ 
+-        //al primo ciclo dell'onDraw la variabile fire è settata a false, al click del bottone per sparare viene settata a true
+-        //quindi viene invalidato il canvas e quindi ridisegnato, a questo punto può entrare nell'if e disegnare il proiettile sparato
+-        //questo ciclo viene iterato finchè il proiettile o entra in collisione con un personaggio, o arriva alla fine dello schermo
++        /*
++        al primo ciclo dell'onDraw la variabile fire è settata a false, al click del bottone per sparare viene settata a true
++        quindi viene invalidato il canvas e quindi ridisegnato, a questo punto può entrare nell'if e disegnare il proiettile sparato
++        questo ciclo viene iterato finchè il proiettile o entra in collisione con un personaggio, o arriva alla fine dello schermo
++         */
+         if(fire) {
+             paint.setColor(playerShip!!.bulletColor)
+             for(bullet: Rect in playerShip!!.bulletList) {
+@@ -120,8 +122,10 @@
+         numEnemy = n
+     }
+ 
+-    //metodi di gestione del movimento del giocatore,
+-    //invocano dei metodi della classe Player
++    /*
++    metodi di gestione del movimento del giocatore,
++    invocano dei metodi della classe Player
++     */
+     fun onClickUpdateRight(){
+         playerShip?.updatePlayerPosition(1)
+         invalidate()
+@@ -135,8 +139,9 @@
+     var p = 2
+ 
+     fun onClickFire(): Int{
+-        //se p è maggiore di zero vuol dire che ci sono dei proiettili nella lista dei proiettili sparati dal giocatore
+-        //e quindi dovranno essere diegnati sul canvas
++        /*se p è maggiore di zero vuol dire che ci sono dei proiettili nella lista dei proiettili sparati dal giocatore
++        e quindi dovranno essere diegnati sul canvas
++         */
+         if (p > 0) {
+             fire = true
+             p = playerShip!!.fire()
+Index: app/src/main/res/mipmap-anydpi-v26/ic_playership_1.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/mipmap-anydpi-v26/ic_playership_1.xml	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
++++ app/src/main/res/mipmap-anydpi-v26/ic_playership_1.xml	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
+@@ -1,4 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+-    <foreground android:drawable="@mipmap/ic_playership_1_foreground"/>
+-</adaptive-icon>
+\ No newline at end of file
+Index: app/src/main/res/mipmap-anydpi-v26/ic_playership_2.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/mipmap-anydpi-v26/ic_playership_2.xml	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
++++ app/src/main/res/mipmap-anydpi-v26/ic_playership_2.xml	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
+@@ -1,4 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+-    <foreground android:drawable="@mipmap/ic_playership_2_foreground"/>
+-</adaptive-icon>
+\ No newline at end of file
+Index: app/src/main/res/mipmap-anydpi-v26/ic_playership_4.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/mipmap-anydpi-v26/ic_playership_4.xml	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
++++ app/src/main/res/mipmap-anydpi-v26/ic_playership_4.xml	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
+@@ -1,4 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+-    <foreground android:drawable="@mipmap/ic_playership_4_foreground"/>
+-</adaptive-icon>
+\ No newline at end of file
+Index: app/src/main/res/mipmap-anydpi-v26/ic_playership_3.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/mipmap-anydpi-v26/ic_playership_3.xml	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
++++ app/src/main/res/mipmap-anydpi-v26/ic_playership_3.xml	(revision e6eb3458e0ce4f703a493978538fd46d6103a4d6)
+@@ -1,4 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+-    <foreground android:drawable="@mipmap/ic_playership_3_foreground"/>
+-</adaptive-icon>
+\ No newline at end of file

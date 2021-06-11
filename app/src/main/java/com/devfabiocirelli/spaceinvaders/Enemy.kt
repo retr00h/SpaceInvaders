@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.util.Log
+import kotlin.random.Random
 
 class Enemy(context: Context, width: Int, height: Int) {
 
@@ -18,8 +19,9 @@ class Enemy(context: Context, width: Int, height: Int) {
     var enemyList = mutableListOf<Bitmap>()
     var enemyHitboxList = mutableListOf<Rect>()
 
-    val bitmap = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_playership_1_foreground)
+    val bitmap = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_enemy_1_foreground)
     val mBitmap = Bitmap.createScaledBitmap(bitmap, h, w, false)
+
     var left = (mBitmap.width*0.1).toInt()
     val top = (mBitmap.height*0.3).toInt()
     var right = (mBitmap.width*0.9).toInt()
@@ -29,7 +31,7 @@ class Enemy(context: Context, width: Int, height: Int) {
 
     fun addEnemy(number: Int){
         for(i in 1..number) {
-            enemyList.add(mBitmap)
+            enemyList.add(randomEnemy())
             enemyHitbox = Rect(left, top, right, bottom)
             enemyHitboxList.add(enemyHitbox)
             setNextPosition()
@@ -122,6 +124,20 @@ class Enemy(context: Context, width: Int, height: Int) {
                 iterator.remove()
             }
         }
+    }
+
+    private fun randomEnemy(): Bitmap{
+
+        var enemyShipImage = when(Random.nextInt(1,3)){
+            1 -> R.mipmap.ic_enemy_2_foreground
+            2 -> R.mipmap.ic_enemy_3_foreground
+            else -> R.mipmap.ic_enemy_1_foreground
+        }
+
+        val bitmap = BitmapFactory.decodeResource(context.resources, enemyShipImage)
+        val mBitmap = Bitmap.createScaledBitmap(bitmap, h, w, false)
+
+        return mBitmap
     }
 
 }
