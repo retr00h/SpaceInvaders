@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     val startPageFragment = StartPageFragment(this)
     val settingsFragment = SettingsFragment(this)
     lateinit var gameFragment: GameFragment
+    lateinit var gameOverFragment: gameOverFragment
 
     private lateinit var backgroundAnimation: AnimationDrawable
     lateinit var gameData: GameData
@@ -113,6 +114,14 @@ class MainActivity : AppCompatActivity() {
         val fragmentManager = supportFragmentManager
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.contentFragment, startPageFragment)
+        transaction.commit()
+    }
+
+    fun gameOverFragment(){
+        gameOverFragment = gameOverFragment(this)
+        val fragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.contentFragment, gameOverFragment)
         transaction.commit()
     }
 

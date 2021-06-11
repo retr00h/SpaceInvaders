@@ -28,6 +28,9 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
     var lives = 0
     var score = 0
     var bloccaThread = false
+    var alreadyClicked = false
+    var fireCicle = 9
+    var enemySpeed = 2
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -59,9 +62,12 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
         }
 
         fireButton.setOnClickListener{
-            gameField.onClickAddBullet()
-            fire = true
-            gameField.onClickFire()
+              if(!alreadyClicked) {
+                  alreadyClicked = true
+                  gameField.onClickAddBullet()
+                  fire = true
+                  gameField.onClickFire()
+              }
 
         }
 
@@ -71,6 +77,16 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
             while (true) {
                 //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 100 millisecondi
                     try {
+                        if(gameField.giocatoreColpito){
+                            lives = gameField.playerLives
+                            gameField.giocatoreColpito = false
+                            setNewPlayerLives(lives)
+                            if(gameField.playerLives <= 0){
+                            mainActivity.gameOverFragment()
+                            break
+                            }
+                        }
+                        //termina il thread se bloccaThread == ture
                         if(bloccaThread){
                             break
                         }
@@ -86,18 +102,27 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
                         }
                         timing++
                         /*
+                        Il seguente if setta un cooldown in modo che il giocatore possa sparare un proiettile
+                        ogni 0,9 secondi (dopo che ha premuto il tasto per sparare, deve atendere 9 cicli del thread
+                        prima di poter sparare nuovamente)
+                         */
+                        if(timing % fireCicle == 0 || timing >= 10){
+                            alreadyClicked = false
+                            timing = 0
+                        }
+                        /*
                         la variabile timing serve per dare "velocita'" diverse agli elementi presenti sul canvas,
                         timing % 2 == 0 ridisegna i nemici ogni due cicli (mentre i proiettili vengono ridisegnati ad ogni ciclo)
                          */
-                        if (timing % 2 == 0) {
+                        if (timing % enemySpeed == 0) {
                             if (gameField.start) {
                                 gameField.enemyUpdatePosition()
                             }
-                            timing = 0
+
                         }
 
-                        if(gameField.colpito) {
-                            gameField.colpito = false
+                        if(gameField.nemicoColpito) {
+                            gameField.nemicoColpito = false
                             score += gameField.points
                             setNewScore(score)
                         }
@@ -156,6 +181,13 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
     private fun setNewScore(newScore: Int){
         scoreText.post {
             scoreText.setText("${mainActivity.applicationContext.getString(R.string.scoreText)}: ${newScore}")
+        }
+    }
+
+    private fun setNewPlayerLives(remainingLives: Int){
+        livesTextView.post{
+            livesTextView.setText("${mainActivity.applicationContext.getString(R.string.livesText)}: ${remainingLives}")
+            mainActivity.dataBaseHelper.updateGameData(score, lives, gameField.getEnemy(), wichLevel, 1)
         }
     }
 

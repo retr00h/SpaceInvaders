@@ -24,9 +24,11 @@ class Field: View {
     var points = 0
     //colpito serve al thread lanciato da GameFragment in modo che se il giocatore
     //colpisce un nemico, il thread lo sappia e aggiorni il punteggio del giocatore
-    var colpito = false
+    var nemicoColpito = false
     //generatore di numeri random
     val random = Random
+    var playerLives = 0
+    var giocatoreColpito = false
 
     constructor(context: Context?) : super(context){
         init(null)
@@ -74,13 +76,6 @@ class Field: View {
             i++
             invalidate()
         }
-        //se ci sono proiettili sparati dai nemici, vengono disegnati sul canvas
-        if(enemy!!.bulletList.size > 0) {
-            for (bullet: Rect in enemy!!.bulletList) {
-                paint.setColor(Color.RED)
-                canvas.drawRect(bullet, paint)
-            }
-        }
 
         //setta start a true dopo aver disegnato i nemici per animarli nel gameFragment
         start = true
@@ -90,6 +85,21 @@ class Field: View {
         canvas.drawRect(playerShip!!.playerHitBox, paint)
         paint.setColor(Color.BLACK)
         canvas.drawBitmap(playerShip!!.mShipBitmap, (playerShip!!.x).toFloat(), (playerShip!!.y).toFloat(), paint)
+
+        //se ci sono proiettili sparati dai nemici, vengono disegnati sul canvas
+        if(enemy!!.bulletList.size > 0) {
+            paint.setColor(Color.RED)
+            for (bullet: Rect in enemy!!.bulletList) {
+                if(bullet.intersect(playerShip!!.playerHitBox)){
+                    Log.i("CIAOOOOOOO", "Giocatore colpito")
+                    giocatoreColpito = true
+                    playerLives -= 1
+                    //TODO: creare le due funzioni di compattamento dei proiettili sparati dai nemici
+                } else {
+                    canvas.drawRect(bullet, paint)
+                }
+            }
+        }
 
         /*
         al primo ciclo dell'onDraw la variabile fire è settata a false, al click del bottone per sparare viene settata a true
@@ -103,7 +113,7 @@ class Field: View {
                 for (enemyHitbox: Rect in enemy!!.enemyHitboxList) {
                     if (bullet.intersect(enemyHitbox)) {
                         points = 50
-                        colpito = true
+                        nemicoColpito = true
                         playerShip!!.compactBulletList(bullet)
                         enemy!!.compactEnemyList(enemyHitbox, pos)
                     } else {
@@ -188,6 +198,10 @@ class Field: View {
             enemy!!.addBullet(i)
         }
         enemy!!.fire()
+
+    }
+
+    fun playerLives(){
 
     }
 }
