@@ -151,4 +151,14 @@ class Enemy(context: Context, val width: Int, val height: Int) {
         return mBitmap
     }
 
+    fun compactBulletList(bullet: Rect){
+        var tempBulletList = mutableListOf<Rect>()
+        for(r: Rect in bulletList){
+            if(r != bullet){
+                tempBulletList.add(r)
+            }
+        }
+        bulletList = tempBulletList
+    }
+
 }

@@ -26,11 +26,10 @@
     <string name="LevelText">"Level "</string>
     <string name="livesText">"Lives "</string>
     <string name="scoreText">"Score "</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="CompletedText">Completed!</string>
     <string name="nextLevelTextButton">Next level</string>
     <string name="gameCompleted">Game completed!</string>
     <string name="HomePage">Home page</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="gameOverText">Game over</string>
+    <string name="restartText">Restart</string>
 </resources>

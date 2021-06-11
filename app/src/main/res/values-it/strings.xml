@@ -27,4 +27,6 @@
     <string name="nextLevelTextButton">Prossimo livello</string>
     <string name="gameCompleted">Gioco completato!</string>
     <string name="HomePage">Pagina iniziale</string>
+    <string name="gameOverText">Hai perso</string>
+    <string name="restartText">Riprova</string>
 </resources>

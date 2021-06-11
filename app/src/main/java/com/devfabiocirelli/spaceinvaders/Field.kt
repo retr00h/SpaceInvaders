@@ -20,15 +20,18 @@ class Field: View {
     var enemy: Enemy? = null
     //la variabile start indica se il gioco sia portito o meno al thread lanciato dal GameFragment
     var start = false
-    var numEnemy = 0
-    var points = 0
     //colpito serve al thread lanciato da GameFragment in modo che se il giocatore
     //colpisce un nemico, il thread lo sappia e aggiorni il punteggio del giocatore
     var nemicoColpito = false
     //generatore di numeri random
     val random = Random
-    var playerLives = 0
     var giocatoreColpito = false
+
+    val dataBaseHelper = DataBaseHelper(context)
+    val playerData = dataBaseHelper.readGameData()
+
+    var playerLives = playerData.lives
+    var numEnemy = playerData.enemies
 
     constructor(context: Context?) : super(context){
         init(null)
@@ -94,7 +97,8 @@ class Field: View {
                     Log.i("CIAOOOOOOO", "Giocatore colpito")
                     giocatoreColpito = true
                     playerLives -= 1
-                    //TODO: creare le due funzioni di compattamento dei proiettili sparati dai nemici
+                    Log.i("CIAOOOOOOOO", "${playerLives}")
+                    enemy!!.compactBulletList(bullet)
                 } else {
                     canvas.drawRect(bullet, paint)
                 }
@@ -112,7 +116,6 @@ class Field: View {
                 var pos = 0
                 for (enemyHitbox: Rect in enemy!!.enemyHitboxList) {
                     if (bullet.intersect(enemyHitbox)) {
-                        points = 50
                         nemicoColpito = true
                         playerShip!!.compactBulletList(bullet)
                         enemy!!.compactEnemyList(enemyHitbox, pos)
@@ -192,18 +195,19 @@ class Field: View {
         return enemy!!.getNumEnemy()
     }
 
-    //genero un Random per fare in modo che un nemico decida casualmente di sparare
+    //se il nemico si trova circa nella posizione del giocatore, randomicamente decide di sparare o meno
     fun enemyFire(i: Int){
-        if(random.nextInt(50) == 5){
-            enemy!!.addBullet(i)
+        //TODO: risolvere il problema seguente: mentre il giocatore ha eliminato il nemico, viene eseguito questo metodo che genera un nullPointerException
+        if(enemy!!.enemyHitboxList[i].left in playerShip!!.playerHitBox.left..playerShip!!.playerHitBox.right ||
+            enemy!!.enemyHitboxList[i].right in playerShip!!.playerHitBox.left..playerShip!!.playerHitBox.right) {
+                if(Random.nextInt(0, 3) == 2) {
+                    enemy!!.addBullet(i)
+                }
         }
         enemy!!.fire()
 
     }
 
-    fun playerLives(){
-
-    }
 }
 
 
