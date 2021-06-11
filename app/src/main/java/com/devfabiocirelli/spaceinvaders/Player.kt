@@ -71,6 +71,18 @@ class Player(context: Context, width: Int, height: Int) {
             bLeft = x + (mShipBitmap.width*0.45).toInt()
             bRight = x + (mShipBitmap.width*0.55).toInt()
 
+        } else {
+            if (playerHitBox.right > length) {
+                x -= shipSpeed
+            } else {
+                x += shipSpeed
+            }
+            //aggiornamento coordinate hitbox giocatore
+            playerHitBox.left = x + (mShipBitmap.width*0.2).toInt()
+            playerHitBox.right = x + (mShipBitmap.width*0.8).toInt()
+            //aggiornamento coordinate proiettile
+            bLeft = x + (mShipBitmap.width*0.45).toInt()
+            bRight = x + (mShipBitmap.width*0.55).toInt()
         }
     }
 

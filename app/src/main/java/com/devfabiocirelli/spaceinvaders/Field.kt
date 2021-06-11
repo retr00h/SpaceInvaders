@@ -67,7 +67,7 @@ class Field: View {
 
         //disegna tutti i nemici presenti in enemyList
         for(e: Bitmap in enemy!!.enemyList){
-            paint.setColor(Color.RED)
+            paint.setColor(Color.TRANSPARENT)
             canvas.drawRect(enemy!!.enemyHitboxList[i], paint)
             paint.setColor(Color.BLACK)
             canvas.drawBitmap(e, (enemy!!.enemyHitboxList[i].left).toFloat(), (height/100).toFloat(), paint)

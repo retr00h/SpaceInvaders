@@ -7,12 +7,13 @@ import android.graphics.Rect
 import android.util.Log
 import kotlin.random.Random
 
-class Enemy(context: Context, width: Int, height: Int) {
-
-    val height = height
+class Enemy(context: Context, val width: Int, val height: Int) {
 
     val h = height/4
     val w = width/10
+
+    var x = 0
+    val enemyShipSpeed = (w * 0.2).toInt()
 
     val context = context
 
@@ -21,6 +22,9 @@ class Enemy(context: Context, width: Int, height: Int) {
 
     val bitmap = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_enemy_1_foreground)
     val mBitmap = Bitmap.createScaledBitmap(bitmap, h, w, false)
+
+    var bLeft = x + (mBitmap.width*0.45).toInt()
+    var bRight = x + (mBitmap.width*0.55).toInt()
 
     var left = (mBitmap.width*0.1).toInt()
     val top = (mBitmap.height*0.3).toInt()
@@ -45,9 +49,15 @@ class Enemy(context: Context, width: Int, height: Int) {
 
     fun updatePosition(direction: Int): Int {
             if (direction == 1) {
+                x += enemyShipSpeed
+
+                //aggiornamento coordinate proiettile
+                bLeft = x + (mBitmap.width*0.45).toInt()
+                bRight = x + (mBitmap.width*0.55).toInt()
+
                 for (h: Rect in enemyHitboxList) {
-                    h.left += (w * 0.2).toInt()
-                    h.right += (w * 0.2).toInt()
+                    h.left += enemyShipSpeed
+                    h.right += enemyShipSpeed
                 }
                 if(enemyHitboxList.size-1 < 0){
                     noEnemy = true
@@ -57,9 +67,15 @@ class Enemy(context: Context, width: Int, height: Int) {
                 }
 
             } else {
+                x -= enemyShipSpeed
+
+                //aggiornamento coordinate proiettile
+                bLeft = x + (mBitmap.width*0.45).toInt()
+                bRight = x + (mBitmap.width*0.55).toInt()
+
                 for (h: Rect in enemyHitboxList) {
-                    h.left -= (w * 0.2).toInt()
-                    h.right -= (w * 0.2).toInt()
+                    h.left -= enemyShipSpeed
+                    h.right -= enemyShipSpeed
                 }
                 if(enemyHitboxList.size-1 < 0) {
                     noEnemy = true
@@ -98,12 +114,7 @@ class Enemy(context: Context, width: Int, height: Int) {
     fun addBullet(i: Int){
         if(i < enemyHitboxList.size) {
             var enemy = enemyHitboxList[i]
-            var bullet = Rect(
-                (enemy.left + (enemy.left*0.5).toInt()),
-                enemy.top,
-                (enemy.right - (enemy.right*0.9).toInt()),
-                enemy.bottom
-            )
+            var bullet = Rect((enemy.left + (mBitmap.width*0.45)).toInt(), enemy.top, (enemy.right - (mBitmap.width*0.45)).toInt(), enemy.bottom)
             bulletList.add(bullet)
         }
     }
