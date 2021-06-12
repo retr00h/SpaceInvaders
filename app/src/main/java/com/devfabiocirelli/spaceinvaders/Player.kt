@@ -12,7 +12,7 @@ class Player(val context: Context,val width: Int,val height: Int) {
     var x = (width*0.45).toInt()
     var y = (height*0.75).toInt()
 
-    val shipSpeed = width/300
+    val shipSpeed = 1
 
     val dataBaseHelper = DataBaseHelper(context)
 

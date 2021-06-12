@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_game.*
@@ -28,8 +27,9 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
     var fireCicle = 9
     var enemySpeed = 2
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    lateinit var playerMovementThread: PlayerMovementThread
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.fragment_game, container, false)
         levelText = rootView.findViewById(R.id.levelIntView)
         livesTextView = rootView.findViewById(R.id.livesInt)
@@ -47,23 +47,24 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
 
         
         rootView.setOnTouchListener ( object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        if (event.x > rootView.width * 0.8) {
-                            gameField.onClickUpdateRight()
-                        } else if (event.x <= rootView.width * 0.2) {
-                            gameField.onClickUpdateLeft()
-                        } else {
-                            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+            override fun onTouch(v: View?, event: MotionEvent): Boolean {
 
-                            if(!alreadyClicked) {
-                                alreadyClicked = true
-                                gameField.onClickAddBullet()
-                                fire = true
-                                gameField.onClickFire()
-                            }
+                // se l'utente preme o tiene premuto sullo schermo, a seconda di dove preme
+                // (il 20% sinistro, il 20% destro, o il centro dello schermo) viene
+                // cambiata una variabile nel playerMovementThread,
+                // che quindi reagisce in modo diverso.
+                // se invece l'utente rilascia lo schermo, il thread non fa nulla
+
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        when {
+                            event.x > rootView.width * 0.8 -> playerMovementThread.movement = 2
+                            event.x <= rootView.width * 0.2 -> playerMovementThread.movement = 1
+                            else -> playerMovementThread.movement = 0
                         }
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        playerMovementThread.movement = -1
                     }
                 }
 
@@ -169,6 +170,7 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
         super.onResume()
         bloccaThread = false
 
+        playerMovementThread = PlayerMovementThread(gameField, mainActivity, this)
     }
 
 
