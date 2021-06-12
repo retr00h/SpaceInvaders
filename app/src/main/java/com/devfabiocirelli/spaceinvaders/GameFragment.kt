@@ -13,7 +13,6 @@ import kotlin.concurrent.thread
 import kotlin.random.Random
 
 class GameFragment(val mainActivity: MainActivity) : Fragment() {
-    val TAG = "GameFragment"
 
     lateinit var rightButton: Button
     lateinit var leftButton: Button
@@ -77,7 +76,6 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
             while (true) {
                 //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 100 millisecondi
                     try {
-                        Log.i("CIAOOOOOOOOOOOOOOOOOOO", "SONO IL THREAD")
                         if(gameField.giocatoreColpito){
                             lives = gameField.playerLives
                             gameField.giocatoreColpito = false
@@ -87,23 +85,17 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
                             break
                             }
                         }
-                        Log.i("CIAOOOOOOOOOOOOOOOOOOO", "SONO IL THREAD")
                         //termina il thread se bloccaThread == true
                         if(bloccaThread){
                             break
                         }
-                        Log.i("CIAOOOOOOOOOOOOOOOOOOO", "SONO IL THREAD")
                         if (fire) {
-                            //if (timing % 2 == 0) {
                                 var fine = gameField.onClickFire()
                                 gameField.invalidate()
                                 if (fine == 0) {
                                     fire = false
                                 }
-                            //timing = 0
-                            //}
                         }
-                        Log.i("CIAOOOOOOOOOOOOOOOOOOO", "SONO IL THREAD")
                         timing++
                         /*
                         Il seguente if setta un cooldown in modo che il giocatore possa sparare un proiettile
@@ -125,12 +117,14 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
 
                         }
 
+                        //quando il giocatore colpisce un nemico, aggiorna il punteggio tramite setNewScore()
                         if(gameField.nemicoColpito) {
                             gameField.nemicoColpito = false
                             score += 50
                             setNewScore(score)
                         }
 
+                        //se il gioco è partito, i nemici sparano
                         if(gameField.start){
                             gameField.enemyFire(random.nextInt(0, gameField.numEnemy))
                         }
@@ -143,7 +137,6 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
                             mainActivity.scoreFragment()
                             break
                         }
-                        Log.i("CIAOOOOOOOOOOOOOOOOOOO", "SONO IL THREAD")
 
                     } catch (e :NullPointerException) {
                         break

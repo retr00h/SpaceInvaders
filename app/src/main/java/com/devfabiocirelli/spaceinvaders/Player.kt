@@ -1,13 +1,10 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.*
-import android.util.Log
 
-class Player(context: Context, width: Int, height: Int) {
+class Player(val context: Context,val width: Int,val height: Int) {
 
-    val length = width
 
     val h = height/4
     val w = width/10
@@ -16,8 +13,6 @@ class Player(context: Context, width: Int, height: Int) {
     var y = (height*0.75).toInt()
 
     val shipSpeed = width/300
-
-    val context = context
 
     val dataBaseHelper = DataBaseHelper(context)
 
@@ -58,7 +53,7 @@ class Player(context: Context, width: Int, height: Int) {
 
     fun updatePlayerPosition(direction: Int) {
 
-        if (playerHitBox.right <= length && playerHitBox.left >= 0) {
+        if (playerHitBox.right <= width && playerHitBox.left >= 0) {
             if (direction == 1) { //Se uguale a 1 si sposta a destra, altrimenti a sinistra
                 x += shipSpeed
             } else {
@@ -72,7 +67,7 @@ class Player(context: Context, width: Int, height: Int) {
             bRight = x + (mShipBitmap.width*0.55).toInt()
 
         } else {
-            if (playerHitBox.right > length) {
+            if (playerHitBox.right > width) {
                 x -= shipSpeed
             } else {
                 x += shipSpeed

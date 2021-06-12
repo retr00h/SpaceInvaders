@@ -7,15 +7,13 @@ import android.graphics.Rect
 import android.util.Log
 import kotlin.random.Random
 
-class Enemy(context: Context, val width: Int, val height: Int) {
+class Enemy(val context: Context, val width: Int, val height: Int) {
 
     val h = height/4
     val w = width/10
 
     var x = 0
     val enemyShipSpeed = (w * 0.2).toInt()
-
-    val context = context
 
     var enemyList = mutableListOf<Bitmap>()
     var enemyHitboxList = mutableListOf<Rect>()
@@ -42,7 +40,11 @@ class Enemy(context: Context, val width: Int, val height: Int) {
         }
     }
 
-    fun setNextPosition(){
+    /*
+    Invocata da addEnemy() per impostare la posizione successiva al nemico
+    generato per generare il prossimo nemico
+     */
+    private fun setNextPosition(){
         left += (w*1.3).toInt()
         right += (w*1.3).toInt()
     }
@@ -85,7 +87,10 @@ class Enemy(context: Context, val width: Int, val height: Int) {
                 }
             }
     }
-
+    /*
+    Quando viene eliminato un nemico, viene invocata la funzione compactEnemyList() per
+    "compattare la lista dei nemici per cancellare il nemico eliminato
+     */
     fun compactEnemyList(enemyHitbox: Rect, enemyPosInList: Int){
         var tempHitboxList = mutableListOf<Rect>()
         var tempEnemyList = mutableListOf<Bitmap>()
@@ -126,6 +131,7 @@ class Enemy(context: Context, val width: Int, val height: Int) {
         return bullet.bottom
     }
 
+    //Metodo per permettere ai nemici di sparare
     fun fire(){
         var iterator = bulletList.iterator()
         while(iterator.hasNext()){
@@ -137,6 +143,7 @@ class Enemy(context: Context, val width: Int, val height: Int) {
         }
     }
 
+    //sceglie randomicamente la skin dei nemici
     private fun randomEnemy(): Bitmap{
 
         var enemyShipImage = when(Random.nextInt(1,3)){
@@ -151,6 +158,10 @@ class Enemy(context: Context, val width: Int, val height: Int) {
         return mBitmap
     }
 
+    /*
+    Simile alla funzione compactEnemyList(), ogni volta che un proiettile impatta contro qualcosa,
+    viene eliminato dalla lista dei proiettili da disegnare
+     */
     fun compactBulletList(bullet: Rect){
         var tempBulletList = mutableListOf<Rect>()
         for(r: Rect in bulletList){

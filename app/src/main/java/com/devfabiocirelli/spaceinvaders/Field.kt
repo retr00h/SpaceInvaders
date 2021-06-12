@@ -10,7 +10,6 @@ import kotlin.random.Random
 class Field: View {
 
     private val paint = Paint()
-    val TAG = "activity"
     lateinit var canvas: Canvas
     //la variabile fire serve per far sapere al canvas se disegnare  o meno i proiettili sparati dal giocatore
     var fire: Boolean = false
@@ -23,8 +22,6 @@ class Field: View {
     //colpito serve al thread lanciato da GameFragment in modo che se il giocatore
     //colpisce un nemico, il thread lo sappia e aggiorni il punteggio del giocatore
     var nemicoColpito = false
-    //generatore di numeri random
-    val random = Random
     var giocatoreColpito = false
 
     val dataBaseHelper = DataBaseHelper(context)
@@ -94,10 +91,8 @@ class Field: View {
             paint.setColor(Color.RED)
             for (bullet: Rect in enemy!!.bulletList) {
                 if(bullet.intersect(playerShip!!.playerHitBox)){
-                    Log.i("CIAOOOOOOO", "Giocatore colpito")
                     giocatoreColpito = true
                     playerLives -= 1
-                    Log.i("CIAOOOOOOOO", "${playerLives}")
                     enemy!!.compactBulletList(bullet)
                 } else {
                     canvas.drawRect(bullet, paint)
@@ -197,14 +192,16 @@ class Field: View {
 
     //se il nemico si trova circa nella posizione del giocatore, randomicamente decide di sparare o meno
     fun enemyFire(i: Int){
-        //TODO: risolvere il problema seguente: mentre il giocatore ha eliminato il nemico, viene eseguito questo metodo che genera un nullPointerException
-        if(enemy!!.enemyHitboxList[i].left in playerShip!!.playerHitBox.left..playerShip!!.playerHitBox.right ||
-            enemy!!.enemyHitboxList[i].right in playerShip!!.playerHitBox.left..playerShip!!.playerHitBox.right) {
-                if(Random.nextInt(0, 3) == 2) {
+        try {
+            if (enemy!!.enemyHitboxList[i].left in playerShip!!.playerHitBox.left..playerShip!!.playerHitBox.right ||
+                enemy!!.enemyHitboxList[i].right in playerShip!!.playerHitBox.left..playerShip!!.playerHitBox.right
+            ) {
+                if (Random.nextInt(0, 3) == 2) {
                     enemy!!.addBullet(i)
                 }
-        }
-        enemy!!.fire()
+            }
+            enemy!!.fire()
+        } catch (e: IndexOutOfBoundsException){ }
 
     }
 
