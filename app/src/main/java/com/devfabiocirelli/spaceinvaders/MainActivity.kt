@@ -19,6 +19,7 @@ import java.util.*
  *   database quando richiesto.
  */
 class MainActivity : AppCompatActivity() {
+
     val startPageFragment = StartPageFragment(this)
     val settingsFragment = SettingsFragment(this)
     lateinit var gameFragment: GameFragment
@@ -129,6 +130,11 @@ class MainActivity : AppCompatActivity() {
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.contentFragment, gameOverFragment)
         transaction.commit()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        gameFragment.bloccaThread = true
     }
 
 

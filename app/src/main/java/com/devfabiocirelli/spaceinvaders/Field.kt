@@ -118,11 +118,6 @@ class Field: View {
 
             }
 
-    //genera il numero di nemici indicato da n
-    fun generateEnemy(n: Int){
-        numEnemy = n
-    }
-
     /*
     metodi di gestione del movimento del giocatore,
     invocano dei metodi della classe Player
@@ -195,9 +190,9 @@ class Field: View {
                     enemy!!.addBullet(i)
                 }
             }
-            enemy!!.fire()
-        } catch (e: IndexOutOfBoundsException){ }
 
+        } catch (e: IndexOutOfBoundsException){ }
+        enemy!!.fire()
     }
 
 }

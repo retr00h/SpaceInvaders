@@ -1,6 +1,7 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -45,7 +46,6 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
         livesTextView.setText("${mainActivity.applicationContext.getString(R.string.livesText)}: ${lives}")
         scoreText.setText("${mainActivity.applicationContext.getString(R.string.scoreText)}: ${score}")
 
-        
         rootView.setOnTouchListener ( object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent): Boolean {
 
@@ -76,7 +76,7 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
             var timing = 0
             val random = Random
             bloccaThread = false
-            while (true) {
+            while (!bloccaThread) {
                 //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 100 millisecondi
                     try {
                         if(gameField.giocatoreColpito){
@@ -89,10 +89,6 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
                                 mainActivity.gameOverFragment()
                             break
                             }
-                        }
-                        //termina il thread se bloccaThread == true
-                        if(bloccaThread){
-                            break
                         }
                         if (fire) {
                                 var fine = gameField.onClickFire()
@@ -163,13 +159,13 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
     override fun onPause() {
         super.onPause()
         bloccaThread = true
+        Log.i("CIAOOOO", "nell'onPause")
         mainActivity.dataBaseHelper.updateGameData(score, lives, gameField.getEnemy(), wichLevel, 1)
     }
 
     override fun onResume() {
         super.onResume()
         bloccaThread = false
-
         playerMovementThread = PlayerMovementThread(gameField, mainActivity, this)
     }
 

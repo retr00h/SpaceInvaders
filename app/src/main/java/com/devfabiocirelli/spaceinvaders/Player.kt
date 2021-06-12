@@ -32,6 +32,10 @@ class Player(val context: Context,val width: Int,val height: Int) {
         1 -> R.mipmap.ic_playership_2_foreground
         2 -> R.mipmap.ic_playership_3_foreground
         3 -> R.mipmap.ic_playership_4_foreground
+        4 -> R.mipmap.ic_playership_5_foreground
+        5 -> R.mipmap.ic_playership_6_foreground
+        6 -> R.mipmap.ic_playership_7_foreground
+        7 -> R.mipmap.ic_playership_8_foreground
         else -> R.mipmap.ic_playership_1_foreground
     }
 

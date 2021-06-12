@@ -33,7 +33,11 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
             R.mipmap.ic_playership_1_foreground,
             R.mipmap.ic_playership_2_foreground,
             R.mipmap.ic_playership_3_foreground,
-            R.mipmap.ic_playership_4_foreground
+            R.mipmap.ic_playership_4_foreground,
+            R.mipmap.ic_playership_5_foreground,
+            R.mipmap.ic_playership_6_foreground,
+            R.mipmap.ic_playership_7_foreground,
+            R.mipmap.ic_playership_8_foreground
         )
 
         //TODO: array di colori
