@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.fragment_customization.*
 import kotlinx.android.synthetic.main.fragment_customization.view.*
 
 class CustomizationFragment(private val mainActivity: MainActivity) : Fragment() {
-
     private var customization: Customization? = null
     private val TAG = "CustomizationActivity"
 
@@ -57,6 +56,8 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
         //I due listener ottengono la posizione selezionata dall'utente e aggiornano nel database
         //le personalizzazioni scelte
         list_view_ship.setOnItemClickListener{ parent, view, position, id ->
+            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
             val selectedCustom = mainActivity.dataBaseHelper.readCustomization()
             val element = parent.getItemAtPosition(position) as Int
             var color = selectedCustom.color
@@ -65,6 +66,8 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
         }
 
         list_view_color.setOnItemClickListener{ parent, view, position, id ->
+            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
             val selectedCustom = mainActivity.dataBaseHelper.readCustomization()
             val element = parent.getItemAtPosition(position) as Int
             var ship = selectedCustom.ship

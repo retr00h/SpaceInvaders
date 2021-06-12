@@ -1,8 +1,8 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -14,9 +14,6 @@ import kotlin.random.Random
 
 class GameFragment(val mainActivity: MainActivity) : Fragment() {
 
-    lateinit var rightButton: Button
-    lateinit var leftButton: Button
-    lateinit var fireButton: Button
     lateinit var rootView: View
     lateinit var levelText: TextView
     lateinit var livesTextView: TextView
@@ -34,9 +31,6 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         rootView = inflater.inflate(R.layout.fragment_game, container, false)
-        rightButton = rootView.findViewById(R.id.rightButton)
-        leftButton = rootView.findViewById(R.id.leftButton)
-        fireButton = rootView.findViewById(R.id.fireButton)
         levelText = rootView.findViewById(R.id.levelIntView)
         livesTextView = rootView.findViewById(R.id.livesInt)
         scoreText = rootView.findViewById(R.id.scoreIntView)
@@ -51,23 +45,31 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
         livesTextView.setText("${mainActivity.applicationContext.getString(R.string.livesText)}: ${lives}")
         scoreText.setText("${mainActivity.applicationContext.getString(R.string.scoreText)}: ${score}")
 
-        rightButton.setOnClickListener{
-            gameField.onClickUpdateRight()
-        }
+        
+        rootView.setOnTouchListener ( object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                when (event?.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        if (event.x > rootView.width * 0.8) {
+                            gameField.onClickUpdateRight()
+                        } else if (event.x <= rootView.width * 0.2) {
+                            gameField.onClickUpdateLeft()
+                        } else {
+                            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
 
-        leftButton.setOnClickListener{
-            gameField.onClickUpdateLeft()
-        }
+                            if(!alreadyClicked) {
+                                alreadyClicked = true
+                                gameField.onClickAddBullet()
+                                fire = true
+                                gameField.onClickFire()
+                            }
+                        }
+                    }
+                }
 
-        fireButton.setOnClickListener{
-              if(!alreadyClicked) {
-                  alreadyClicked = true
-                  gameField.onClickAddBullet()
-                  fire = true
-                  gameField.onClickFire()
-              }
-
-        }
+                return true
+            }
+        })
 
         thread(start = true) {
             var timing = 0
@@ -77,6 +79,8 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
                 //Se il giocatore ha sparato, entra nell'if e chiede alla view di ridisegnarsi ogni 100 millisecondi
                     try {
                         if(gameField.giocatoreColpito){
+                            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
                             lives = gameField.playerLives
                             gameField.giocatoreColpito = false
                             setNewPlayerLives(lives)
@@ -119,6 +123,8 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
 
                         //quando il giocatore colpisce un nemico, aggiorna il punteggio tramite setNewScore()
                         if(gameField.nemicoColpito) {
+                            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
                             gameField.nemicoColpito = false
                             score += 50
                             setNewScore(score)
@@ -126,7 +132,7 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
 
                         //se il gioco è partito, i nemici sparano
                         if(gameField.start){
-                            gameField.enemyFire(random.nextInt(0, gameField.numEnemy))
+                            gameField.enemyFire(random.nextInt(0, gameField.numEnemy), mainActivity)
                         }
 
                         Thread.sleep(100)
@@ -157,7 +163,6 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
         super.onPause()
         bloccaThread = true
         mainActivity.dataBaseHelper.updateGameData(score, lives, gameField.getEnemy(), wichLevel, 1)
-
     }
 
     override fun onResume() {

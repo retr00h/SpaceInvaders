@@ -81,10 +81,9 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
         contentValues.put(LOCALE_COL, locale)
 
         val result = db.update(SETTINGS_TABLE, contentValues, null, null)
-        // TODO: sostituire le stringhe delle toast con quelle di strings.xml
-        if (result == 0) Toast.makeText(context, "Couldn't save new settings", Toast.LENGTH_SHORT).show()
+        if (result == 0) Toast.makeText(context, context.getString(R.string.dbSettingsUpdateError), Toast.LENGTH_SHORT).show()
         else {
-            Toast.makeText(context, "New settings saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.dbSettingsUpdateOk), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -123,11 +122,6 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
         contentValues.put(RESUMABLEGAME_COL, resumableGame)
 
         val result = db.update(GAME_TABLE, contentValues, null, null)
-        // TODO: sostituire le stringhe delle toast con quelle di strings.xml
-        if (result == 0) Toast.makeText(context, "Couldn't save new settings", Toast.LENGTH_SHORT).show()
-        else {
-            Toast.makeText(context, "New settings saved", Toast.LENGTH_SHORT).show()
-        }
     }
 
     /**
@@ -150,7 +144,6 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
         level = result.getInt(result.getColumnIndex(LEVEL_COL))
         resumableGame = result.getInt(result.getColumnIndex(RESUMABLEGAME_COL))
 
-
         result.close()
         return GameData(score, lives, enemies, level, resumableGame)
     }
@@ -170,7 +163,6 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
     }
 
     fun readCustomization(): Customization {
-
         val selectedSpaceShip: Int
         val selectedColor: Int
 
@@ -182,6 +174,5 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DATABASE_
         selectedColor = result.getInt(result.getColumnIndex(COLOR_COL))
         result.close()
         return Customization(selectedColor, selectedSpaceShip)
-
     }
 }

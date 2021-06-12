@@ -1,7 +1,9 @@
 package com.devfabiocirelli.spaceinvaders
 
+import android.content.Context
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.os.Vibrator
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.FrameLayout
@@ -27,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var settings: Settings
     val dataBaseHelper = DataBaseHelper(this)
 
+    lateinit var vibe: Vibrator
+
     /**
      * In questo metodo viene recuperata l'animazione dello sfondo
      * (usata poi in onStart() e onStop()), vengono letti impostazioni e dati di gioco dal db,
@@ -50,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         resources.updateConfiguration(conf, dm)
 
         gameFragment = GameFragment(this)
+
+        vibe = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         // inserisce l'istanza di startPageFragment nel contentFragment e la visualizza
         val fragmentManager = supportFragmentManager

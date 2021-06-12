@@ -13,21 +13,19 @@ import kotlinx.android.synthetic.main.fragment_customization.*
 import kotlinx.android.synthetic.main.fragment_score.*
 
 class ScoreFragment(val mainActivity: MainActivity) : Fragment() {
-
-
     lateinit var rootView: View
     lateinit var textView: TextView
     lateinit var nextLevelButton: Button
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         rootView = inflater.inflate(R.layout.fragment_score, container, false)
         textView = rootView.findViewById(R.id.textView2)
         nextLevelButton = rootView.findViewById(R.id.nextLevelButton)
+
+        applyAudio(mainActivity.settings.audio)
 
         val gameData = mainActivity.dataBaseHelper.readGameData()
         var level = gameData.level
@@ -38,18 +36,13 @@ class ScoreFragment(val mainActivity: MainActivity) : Fragment() {
         level++
 
         if(level == 6){
-
             textView.setText("${mainActivity.applicationContext.getString(R.string.gameCompleted)}")
-
             nextLevelButton.setText("${mainActivity.applicationContext.getString(R.string.HomePage)}")
-
             nextLevelButton.setOnClickListener{
                 mainActivity.dataBaseHelper.updateGameData(0, 3, 2, 1, 0)
                 mainActivity.startPageFragment()
             }
-
         } else {
-
             textView.setText(
                 "${mainActivity.applicationContext.getString(R.string.CompletedText)}\n" +
                         "score: ${score}\n" +
@@ -57,15 +50,19 @@ class ScoreFragment(val mainActivity: MainActivity) : Fragment() {
             )
 
             nextLevelButton.setOnClickListener {
+                if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
 
                 numEnemies = level + 2
                 mainActivity.dataBaseHelper.updateGameData(score, lives, numEnemies, level, 1)
                 mainActivity.gameFragment()
             }
-
         }
 
         return rootView
+    }
+
+    fun applyAudio(audio: Boolean) {
+        nextLevelButton.isSoundEffectsEnabled = audio
     }
 
 }

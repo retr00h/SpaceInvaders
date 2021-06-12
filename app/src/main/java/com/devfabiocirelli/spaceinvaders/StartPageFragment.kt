@@ -40,6 +40,8 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         // funzione lambda che inizia una nuova partita
         // (chiedendo conferma in caso di dati già esistenti)
         startBtn.setOnClickListener {
+            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
             // se uno qualunque dei dati di gioco equivale a -1, non c'è una partita salvata,
             // quindi se ne può iniziare direttamente una nuova.
             // se invece ci sono dati salvati, viene richiesta una conferma
@@ -66,6 +68,8 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
 
         // funzione lambda che permette di riprendere una partita se esiste
         resumeBtn.setOnClickListener{
+            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
             // se uno qualunque dei dati di gioco equivale a -1, non c'è una partita salvata,
             // quindi non si può riprendere una partita salvata
             if (mainActivity.gameData.resumableGame == 0) {
@@ -79,6 +83,8 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         // funzione lambda che visualizza il fragment di personalizzazione della nave del
         // giocatore
         newActivityButton.setOnClickListener{
+            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
             val fragment = CustomizationFragment(mainActivity)
             val fragmentManager = this.requireActivity().supportFragmentManager
             val transaction: FragmentTransaction = fragmentManager.beginTransaction()
@@ -89,6 +95,8 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
 
         // funzione lambda che visualizza il fragment delle impostazioni dell'app
         optionsBtn.setOnClickListener {
+            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
             val fragmentManager = mainActivity.supportFragmentManager
             val transaction: FragmentTransaction = fragmentManager.beginTransaction()
             transaction.replace(R.id.contentFragment, mainActivity.settingsFragment)

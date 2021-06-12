@@ -46,6 +46,10 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             // se soundSwitch viene cliccato, vengono creati nuovi Settings coi valori aggiornati
             // e vengono aggiornati anche i valori nel database
             soundSwitch.setOnClickListener {
+                if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
+                mainActivity.settings.audio = soundSwitch.isChecked
+
                 Log.i(TAG, "Sound switch pressed")
                 mainActivity.startPageFragment.applyAudio(soundSwitch.isChecked)
                 applyAudio(soundSwitch.isChecked)
@@ -56,6 +60,10 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             // se hapticSwitch viene cliccato, vengono creati nuovi Settings coi valori aggiornati
             // e vengono aggiornati anche i valori nel database
             hapticSwitch.setOnClickListener {
+                if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
+                mainActivity.settings.vibrations = hapticSwitch.isChecked
+
                 Log.i(TAG, "Haptic switch pressed")
                 mainActivity.dataBaseHelper.updateSettings(mainActivity.settings.audio,
                         hapticSwitch.isChecked, mainActivity.settings.locale)
@@ -64,6 +72,8 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             // funzione lambda che aggiorna la locale a livello di activity al clic sul bottone,
             // e i valori in settings e nel database remoto
             languageBtn.setOnClickListener {
+                if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
                 Log.i(TAG, "Change language button pressed")
 
                 val newLocale = when (languageBtn.text) {
@@ -92,6 +102,8 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
 
             // funzione lambda che ritorna allo startFragment al clic sul bottone
             backBtn.setOnClickListener {
+                if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
                 Log.i(TAG, "Back button pressed")
                 val fragmentManager = this.requireActivity().supportFragmentManager
                 //Serve per tornare indietro alla pressione del tasto indietro

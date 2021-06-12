@@ -8,7 +8,6 @@ import android.view.View
 import kotlin.random.Random
 
 class Field: View {
-
     private val paint = Paint()
     lateinit var canvas: Canvas
     //la variabile fire serve per far sapere al canvas se disegnare  o meno i proiettili sparati dal giocatore
@@ -42,13 +41,7 @@ class Field: View {
         init(attrs)
     }
 
-    private fun init(attrs: AttributeSet?){
-
-        setOnClickListener{
-            invalidate()
-        }
-
-    }
+    private fun init(attrs: AttributeSet?){}
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -191,12 +184,14 @@ class Field: View {
     }
 
     //se il nemico si trova circa nella posizione del giocatore, randomicamente decide di sparare o meno
-    fun enemyFire(i: Int){
+    fun enemyFire(i: Int, mainActivity: MainActivity){
         try {
             if (enemy!!.enemyHitboxList[i].left in playerShip!!.playerHitBox.left..playerShip!!.playerHitBox.right ||
                 enemy!!.enemyHitboxList[i].right in playerShip!!.playerHitBox.left..playerShip!!.playerHitBox.right
             ) {
                 if (Random.nextInt(0, 3) == 2) {
+                    if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
                     enemy!!.addBullet(i)
                 }
             }

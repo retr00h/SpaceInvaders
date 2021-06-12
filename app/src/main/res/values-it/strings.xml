@@ -13,7 +13,6 @@
     <string name="alertPositiveButton">Sì</string>
     <string name="alertNegativeButton">No</string>
     <string name="noSavedGameAvailable">Non c\'è nessuna partita da riprendere</string>
-    <string name="login_first">Prima devi effettuare il login con Google!</string>
     <string name="dbCustomUpdateError">Errore, impossibile aggiornare le personalizzazioni selezionate</string>
     <string name="dbCustomUpdateOk">Personalizzazioni aggiornate!</string>
     <string name="currentSelectedCustomization">Personalizzazione selezionate</string>
@@ -29,4 +28,6 @@
     <string name="HomePage">Pagina iniziale</string>
     <string name="gameOverText">Hai perso</string>
     <string name="restartText">Riprova</string>
+    <string name="dbSettingsUpdateError">Errore, non ho salvato le nuove impostazioni</string>
+    <string name="dbSettingsUpdateOk">Ho salvato le nuove impostazioni</string>
 </resources>

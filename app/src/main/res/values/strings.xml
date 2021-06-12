@@ -16,7 +16,6 @@
     <string name="alertPositiveButton">Yes</string>
     <string name="alertNegativeButton">No</string>
     <string name="noSavedGameAvailable">There isn\'t any game to resume</string>
-    <string name="login_first">You have to login with Google first!</string>
     <string name="dbCustomUpdateError">Error, could\'t save selected customizations</string>
     <string name="dbCustomUpdateOk">Customizations updated!</string>
     <string name="currentSelectedCustomization">Current customizations selected</string>
@@ -32,4 +31,6 @@
     <string name="HomePage">Home page</string>
     <string name="gameOverText">Game over</string>
     <string name="restartText">Restart</string>
+    <string name="dbSettingsUpdateError">Couldn\'t save new settings</string>
+    <string name="dbSettingsUpdateOk">New settings saved</string>
 </resources>
