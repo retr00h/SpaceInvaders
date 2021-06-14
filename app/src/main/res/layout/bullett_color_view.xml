@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.devfabiocirelli.spaceinvaders.customColorView
+    <com.devfabiocirelli.spaceinvaders.CustomColorView
         android:id="@+id/colorView"
         android:layout_width="83dp"
         android:layout_height="86dp"

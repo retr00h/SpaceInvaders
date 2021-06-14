@@ -48,24 +48,29 @@ class Field: View {
 
         this.canvas = canvas
 
-        if(playerShip == null) {
+        if (playerShip == null) {
             playerShip = Player(context, width, height)
         }
 
         var i = 0
 
-        if(enemy == null){
+        if (enemy == null) {
             enemy = Enemy(context, width, height)
             enemy!!.addEnemy(numEnemy)
 
         }
 
         //disegna tutti i nemici presenti in enemyList
-        for(e: Bitmap in enemy!!.enemyList){
+        for (e: Bitmap in enemy!!.enemyList) {
             paint.setColor(Color.TRANSPARENT)
             canvas.drawRect(enemy!!.enemyHitboxList[i], paint)
             paint.setColor(Color.BLACK)
-            canvas.drawBitmap(e, (enemy!!.enemyHitboxList[i].left).toFloat(), (height/100).toFloat(), paint)
+            canvas.drawBitmap(
+                e,
+                (enemy!!.enemyHitboxList[i].left).toFloat(),
+                (height / 100).toFloat(),
+                paint
+            )
             i++
             invalidate()
         }
@@ -77,13 +82,18 @@ class Field: View {
         paint.setColor(Color.TRANSPARENT)
         canvas.drawRect(playerShip!!.playerHitBox, paint)
         paint.setColor(Color.BLACK)
-        canvas.drawBitmap(playerShip!!.mShipBitmap, (playerShip!!.x).toFloat(), (playerShip!!.y).toFloat(), paint)
+        canvas.drawBitmap(
+            playerShip!!.mShipBitmap,
+            (playerShip!!.x).toFloat(),
+            (playerShip!!.y).toFloat(),
+            paint
+        )
 
         //se ci sono proiettili sparati dai nemici, vengono disegnati sul canvas
-        if(enemy!!.bulletList.size > 0) {
+        if (enemy!!.bulletList.size > 0) {
             paint.setColor(Color.RED)
             for (bullet: Rect in enemy!!.bulletList) {
-                if(bullet.intersect(playerShip!!.playerHitBox)){
+                if (bullet.intersect(playerShip!!.playerHitBox)) {
                     giocatoreColpito = true
                     playerLives -= 1
                     enemy!!.compactBulletList(bullet)
@@ -98,25 +108,26 @@ class Field: View {
         quindi viene invalidato il canvas e quindi ridisegnato, a questo punto può entrare nell'if e disegnare il proiettile sparato
         questo ciclo viene iterato finchè il proiettile o entra in collisione con un personaggio, o arriva alla fine dello schermo
          */
-        if(fire) {
-            paint.setColor(playerShip!!.bulletColor)
-            for(bullet: Rect in playerShip!!.bulletList) {
-                var pos = 0
-                for (enemyHitbox: Rect in enemy!!.enemyHitboxList) {
-                    if (bullet.intersect(enemyHitbox)) {
-                        nemicoColpito = true
-                        playerShip!!.compactBulletList(bullet)
-                        enemy!!.compactEnemyList(enemyHitbox, pos)
-                    } else {
-                        canvas.drawRect(bullet, paint)
+        try {
+            if (fire) {
+                paint.setColor(playerShip!!.bulletColor)
+                for (bullet: Rect in playerShip!!.bulletList) {
+                    var pos = 0
+                    for (enemyHitbox: Rect in enemy!!.enemyHitboxList) {
+                        if (bullet.intersect(enemyHitbox)) {
+                            nemicoColpito = true
+                            playerShip!!.compactBulletList(bullet)
+                            enemy!!.compactEnemyList(enemyHitbox, pos)
+                        } else {
+                            canvas.drawRect(bullet, paint)
+                        }
+                        pos++
                     }
-                    canvas.drawRect(bullet, paint)
-                    pos++
                 }
             }
-                }
 
-            }
+        } catch (e: ConcurrentModificationException){ }
+    }
 
     /*
     metodi di gestione del movimento del giocatore,

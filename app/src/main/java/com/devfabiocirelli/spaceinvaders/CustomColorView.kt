@@ -2,11 +2,12 @@ package com.devfabiocirelli.spaceinvaders
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 
-class customColorView : View{
+class CustomColorView : View{
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
@@ -30,6 +31,7 @@ class customColorView : View{
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawCircle(width.toFloat()/2, height.toFloat()/2, (height.toFloat())*0.3.toFloat(), paint)
+            canvas.drawCircle(width.toFloat()/2, height.toFloat()/2, (height.toFloat())*0.3.toFloat(), paint)
+
     }
 }

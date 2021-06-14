@@ -5,6 +5,7 @@ import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -54,7 +55,9 @@ class MainActivity : AppCompatActivity() {
         conf.locale = if (settings.locale.startsWith("en")) Locale.ENGLISH else Locale.ITALIAN
         resources.updateConfiguration(conf, dm)
 
-        gameFragment = GameFragment(this)
+        if(savedInstanceState == null){
+            gameFragment = GameFragment(this)
+        }
 
         vibe = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
@@ -133,9 +136,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        gameFragment.bloccaThread = true
-    }
 
+        val fragmentsList = supportFragmentManager.fragments
+        if(fragmentsList.size > 0){
+            val actualFragment = fragmentsList.get(fragmentsList.lastIndex)//get(fragmentsList.size - 1)
+            if(actualFragment == gameFragment){
+                supportFragmentManager.beginTransaction().remove(actualFragment).commit()
+                supportFragmentManager.popBackStack()
+            } else {
+                super.onBackPressed()
+            }
+
+        }
+
+    }
 
 }

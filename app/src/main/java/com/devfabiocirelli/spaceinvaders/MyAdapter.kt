@@ -1,6 +1,7 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,8 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 
 class MyAdapter(private val context: Context, val data: Array<Int>, val layout: Int) : BaseAdapter() {
+
+    var selected = Color.RED
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
@@ -20,8 +23,8 @@ class MyAdapter(private val context: Context, val data: Array<Int>, val layout: 
         //In base al layout imposta la view
         if (newView != null) {
 
-            if(layout == R.layout.bulett_color_view) {
-                val imageColor = newView.findViewById<customColorView>(R.id.colorView)
+            if(layout == R.layout.bullett_color_view) {
+                val imageColor = newView.findViewById<CustomColorView>(R.id.colorView)
                 imageColor.setColor(data[position])
             }
             if(layout == R.layout.ship_model_view){
@@ -48,5 +51,6 @@ class MyAdapter(private val context: Context, val data: Array<Int>, val layout: 
     override fun getCount(): Int {
         return data.size
     }
+
 
 }

@@ -105,7 +105,7 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
         return rootView
     }
 
-    // funzione visualizza il fragment di gioco
+    // funzione che visualizza il fragment di gioco
     private fun startGame() {
         mainActivity.gameFragment = GameFragment(mainActivity)
 

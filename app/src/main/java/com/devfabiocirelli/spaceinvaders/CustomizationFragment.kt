@@ -1,5 +1,6 @@
 package com.devfabiocirelli.spaceinvaders
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,9 +11,6 @@ import kotlinx.android.synthetic.main.fragment_customization.*
 import kotlinx.android.synthetic.main.fragment_customization.view.*
 
 class CustomizationFragment(private val mainActivity: MainActivity) : Fragment() {
-    private var customization: Customization? = null
-    private val TAG = "CustomizationActivity"
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,10 +53,12 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
 
         //Popola le listView con le immagini e i colori disponibili
         list_view_ship.adapter = MyAdapter(requireContext(), ship, R.layout.ship_model_view)
-        list_view_color.adapter = MyAdapter(requireContext(), colors, R.layout.bulett_color_view)
+        list_view_color.adapter = MyAdapter(requireContext(), colors, R.layout.bullett_color_view)
 
-        //I due listener ottengono la posizione selezionata dall'utente e aggiornano nel database
-        //le personalizzazioni scelte
+        /*
+        I due listener ottengono la posizione selezionata dall'utente e aggiornano nel database
+        le personalizzazioni scelte
+         */
         list_view_ship.setOnItemClickListener{ parent, view, position, id ->
             if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
 
