@@ -73,7 +73,6 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
             // se uno qualunque dei dati di gioco equivale a -1, non c'è una partita salvata,
             // quindi non si può riprendere una partita salvata
             if (mainActivity.gameData.resumableGame == 0) {
-                Log.i("CIAOO", "${mainActivity.gameData.resumableGame}")
                 Toast.makeText(context, getString(R.string.noSavedGameAvailable), Toast.LENGTH_SHORT).show()
             } else {
                 startGame()
@@ -108,6 +107,8 @@ class StartPageFragment(private val mainActivity: MainActivity) : Fragment() {
 
     // funzione visualizza il fragment di gioco
     private fun startGame() {
+        mainActivity.gameFragment = GameFragment(mainActivity)
+
         val fragmentManager = this.requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.contentFragment, mainActivity.gameFragment)

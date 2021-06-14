@@ -84,6 +84,7 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
         Log.i("CIAOOOO", "nell'onPause")
 
         mainActivity.dataBaseHelper.updateGameData(score, lives, gameField.getEnemy(), wichLevel, 1)
+        super.onStop()
     }
 
     override fun onResume() {
