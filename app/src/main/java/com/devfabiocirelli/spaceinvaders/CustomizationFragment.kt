@@ -2,15 +2,20 @@ package com.devfabiocirelli.spaceinvaders
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ListView
 import kotlinx.android.synthetic.main.fragment_customization.*
 import kotlinx.android.synthetic.main.fragment_customization.view.*
 
 class CustomizationFragment(private val mainActivity: MainActivity) : Fragment() {
+
+    private lateinit var backButton: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -19,12 +24,21 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
 
         val rootView = inflater.inflate(R.layout.fragment_customization, container, false)
 
+        backButton = rootView.findViewById(R.id.imageButtonBackCustomization)
+        backButton.setOnClickListener {
+            if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
+
+            val fragmentManager = this.requireActivity().supportFragmentManager
+            //Serve per tornare indietro alla pressione del tasto indietro
+            fragmentManager.popBackStack()
+        }
+
         //imposta la textView all'avvio con le personalizzazioni dell'utente salvate attualmente nel database
         val selectedCustom = mainActivity.dataBaseHelper.readCustomization()
         rootView?.textView?.text = (
-                mainActivity.applicationContext.getString(R.string.currentSelectedCustomization) + "\n"
-                        + mainActivity.applicationContext.getString(R.string.SpaceshipModel) + "${selectedCustom.ship}\n"
-                        + mainActivity.applicationContext.getString(R.string.selectedColor) + "${selectedCustom.color}")
+                mainActivity.getString(R.string.currentSelectedCustomization) + "\n"
+                        + mainActivity.getString(R.string.SpaceshipModel) + "${selectedCustom.ship}\n"
+                        + mainActivity.getString(R.string.selectedColor) + "${selectedCustom.color}")
 
         //TODO: array di immagini delle navi
         val ship = arrayOf(
@@ -86,9 +100,9 @@ class CustomizationFragment(private val mainActivity: MainActivity) : Fragment()
     private fun setText() {
         val selectedCustom = mainActivity.dataBaseHelper.readCustomization()
             textView?.text = (
-                mainActivity.applicationContext.getString(R.string.currentSelectedCustomization) + "\n"
-                        + mainActivity.applicationContext.getString(R.string.SpaceshipModel) + "${selectedCustom.ship}\n"
-                        + mainActivity.applicationContext.getString(R.string.selectedColor) + "${selectedCustom.color}")
+                mainActivity.getString(R.string.currentSelectedCustomization) + "\n"
+                        + mainActivity.getString(R.string.SpaceshipModel) + "${selectedCustom.ship}\n"
+                        + mainActivity.getString(R.string.selectedColor) + "${selectedCustom.color}")
     }
 
 

@@ -36,15 +36,15 @@ class ScoreFragment(val mainActivity: MainActivity) : Fragment() {
         level++
 
         if(level == 6){
-            textView.setText("${mainActivity.applicationContext.getString(R.string.gameCompleted)}")
-            nextLevelButton.setText("${mainActivity.applicationContext.getString(R.string.HomePage)}")
+            textView.setText("${mainActivity.getString(R.string.gameCompleted)}")
+            nextLevelButton.setText("${mainActivity.getString(R.string.HomePage)}")
             nextLevelButton.setOnClickListener{
                 mainActivity.dataBaseHelper.updateGameData(0, 3, 2, 1, 0)
                 mainActivity.startPageFragment()
             }
         } else {
             textView.setText(
-                "${mainActivity.applicationContext.getString(R.string.CompletedText)}\n" +
+                "${mainActivity.getString(R.string.CompletedText)}\n" +
                         "score: ${score}\n" +
                         "next level: ${level}"
             )

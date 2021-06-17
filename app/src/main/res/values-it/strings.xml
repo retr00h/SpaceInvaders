@@ -15,10 +15,9 @@
     <string name="noSavedGameAvailable">Non c\'è nessuna partita da riprendere</string>
     <string name="dbCustomUpdateError">Errore, impossibile aggiornare le personalizzazioni selezionate</string>
     <string name="dbCustomUpdateOk">Personalizzazioni aggiornate!</string>
-    <string name="currentSelectedCustomization">Personalizzazione selezionate</string>
+    <string name="currentSelectedCustomization">Personalizzazioni selezionate</string>
     <string name="SpaceshipModel">Astronave:</string>
     <string name="selectedColor">Colore proiettile:</string>
-    <string name="Fire">Spara</string>
     <string name="LevelText">"Livello "</string>
     <string name="livesText">"Vite "</string>
     <string name="scoreText">"Punteggio "</string>

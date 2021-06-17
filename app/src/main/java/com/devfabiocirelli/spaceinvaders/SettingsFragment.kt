@@ -50,7 +50,6 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
 
                 mainActivity.settings.audio = soundSwitch.isChecked
 
-                Log.i(TAG, "Sound switch pressed")
                 mainActivity.startPageFragment.applyAudio(soundSwitch.isChecked)
                 applyAudio(soundSwitch.isChecked)
                 mainActivity.dataBaseHelper.updateSettings(soundSwitch.isChecked,
@@ -64,7 +63,6 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
 
                 mainActivity.settings.vibrations = hapticSwitch.isChecked
 
-                Log.i(TAG, "Haptic switch pressed")
                 mainActivity.dataBaseHelper.updateSettings(mainActivity.settings.audio,
                         hapticSwitch.isChecked, mainActivity.settings.locale)
             }
@@ -73,8 +71,6 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             // e i valori in settings e nel database remoto
             languageBtn.setOnClickListener {
                 if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
-
-                Log.i(TAG, "Change language button pressed")
 
                 val newLocale = when (languageBtn.text) {
                     // il testo del bottone cliccato è "Italiano", vuol dire che la lingua deve passare
@@ -85,7 +81,6 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
                     else -> Locale.ENGLISH
                 }
 
-                // TODO: il testo del toast è sempre mostrato in Inglese
                 Toast.makeText(mainActivity.applicationContext, R.string.language_will_be_applied, Toast.LENGTH_SHORT).show()
 
                 // vengono creati nuovi Settings coi valori aggiornati
@@ -104,7 +99,6 @@ class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
             backBtn.setOnClickListener {
                 if (mainActivity.settings.vibrations) mainActivity.vibe.vibrate(80)
 
-                Log.i(TAG, "Back button pressed")
                 val fragmentManager = this.requireActivity().supportFragmentManager
                 //Serve per tornare indietro alla pressione del tasto indietro
                 fragmentManager.popBackStack()

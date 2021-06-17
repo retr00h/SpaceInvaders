@@ -6,7 +6,6 @@
     <string name="language_name">English</string>
     <string name="language_text">Language</string>
     <string name="startButton">Start</string>
-    <string name="gameTitle" translatable="false">Space Invaders</string>
     <string name="language_will_be_applied">Language preference updated, they will be applied by changing window.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="resume_game">Resume game</string>
@@ -21,7 +20,6 @@
     <string name="currentSelectedCustomization">Current customizations selected</string>
     <string name="SpaceshipModel">Spaceship:</string>
     <string name="selectedColor">Bullet color:</string>
-    <string name="Fire">Fire</string>
     <string name="LevelText">"Level "</string>
     <string name="livesText">"Lives "</string>
     <string name="scoreText">"Score "</string>
