@@ -29,4 +29,5 @@
     <string name="restartText">Riprova</string>
     <string name="dbSettingsUpdateError">Errore, non ho salvato le nuove impostazioni</string>
     <string name="dbSettingsUpdateOk">Ho salvato le nuove impostazioni</string>
+    <string name="levelText">Prossimo livello</string>
 </resources>

@@ -5,7 +5,6 @@ import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity

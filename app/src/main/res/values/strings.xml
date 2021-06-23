@@ -31,4 +31,5 @@
     <string name="restartText">Restart</string>
     <string name="dbSettingsUpdateError">Couldn\'t save new settings</string>
     <string name="dbSettingsUpdateOk">New settings saved</string>
+    <string name="levelText">Next level</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -9,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_game.*
-import kotlin.concurrent.thread
-import kotlin.random.Random
 
 class GameFragment(val mainActivity: MainActivity) : Fragment() {
 
@@ -43,9 +40,9 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
         lives = gameData.lives
         score = gameData.score
 
-        levelText.setText("${mainActivity.applicationContext.getString(R.string.LevelText)}: ${wichLevel}")
-        livesTextView.setText("${mainActivity.applicationContext.getString(R.string.livesText)}: ${lives}")
-        scoreText.setText("${mainActivity.applicationContext.getString(R.string.scoreText)}: ${score}")
+        levelText.setText("${mainActivity.getString(R.string.LevelText)}: ${wichLevel}")
+        livesTextView.setText("${mainActivity.getString(R.string.livesText)}: ${lives}")
+        scoreText.setText("${mainActivity.getString(R.string.scoreText)}: ${score}")
 
         rootView.setOnTouchListener ( object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent): Boolean {
@@ -81,7 +78,6 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
     override fun onPause() {
         super.onPause()
         bloccaThread = true
-        Log.i("CIAOOOO", "nell'onPause")
 
         mainActivity.dataBaseHelper.updateGameData(score, lives, gameField.getEnemy(), wichLevel, 1)
         super.onStop()
@@ -100,13 +96,13 @@ class GameFragment(val mainActivity: MainActivity) : Fragment() {
 
     fun setNewScore(newScore: Int){
         scoreText.post {
-            scoreText.setText("${mainActivity.applicationContext.getString(R.string.scoreText)}: ${newScore}")
+            scoreText.setText("${mainActivity.getString(R.string.scoreText)}: ${newScore}")
         }
     }
 
     fun setNewPlayerLives(remainingLives: Int){
         livesTextView.post{
-            livesTextView.setText("${mainActivity.applicationContext.getString(R.string.livesText)}: ${remainingLives}")
+            livesTextView.setText("${mainActivity.getString(R.string.livesText)}: ${remainingLives}")
             mainActivity.dataBaseHelper.updateGameData(score, lives, gameField.getEnemy(), wichLevel, 1)
         }
     }

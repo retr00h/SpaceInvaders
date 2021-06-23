@@ -1,16 +1,12 @@
 package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.fragment.app.FragmentTransaction
-import kotlinx.android.synthetic.main.fragment_customization.*
-import kotlinx.android.synthetic.main.fragment_score.*
 
 class ScoreFragment(val mainActivity: MainActivity) : Fragment() {
     lateinit var rootView: View
@@ -45,8 +41,8 @@ class ScoreFragment(val mainActivity: MainActivity) : Fragment() {
         } else {
             textView.setText(
                 "${mainActivity.getString(R.string.CompletedText)}\n" +
-                        "score: ${score}\n" +
-                        "next level: ${level}"
+                        mainActivity.getString(R.string.scoreText) + "${score}\n" +
+                        mainActivity.getString(R.string.levelText) + " ${level}"
             )
 
             nextLevelButton.setOnClickListener {

@@ -2,7 +2,6 @@ package com.devfabiocirelli.spaceinvaders
 
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import androidx.fragment.app.Fragment
 import java.util.*
 
 class SettingsFragment(private val mainActivity: MainActivity) : Fragment() {
-    val TAG = "SettingsFragment"
     lateinit var rootView: View
     lateinit var languageBtn: Button
     lateinit var backBtn: ImageButton

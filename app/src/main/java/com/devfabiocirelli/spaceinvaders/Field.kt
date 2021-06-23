@@ -3,7 +3,6 @@ package com.devfabiocirelli.spaceinvaders
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import kotlin.random.Random
 
@@ -72,8 +71,8 @@ class Field: View {
                 paint
             )
             i++
-            invalidate()
         }
+        invalidate()
 
         //setta start a true dopo aver disegnato i nemici per animarli nel gameFragment
         start = true

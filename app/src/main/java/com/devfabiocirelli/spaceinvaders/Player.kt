@@ -2,7 +2,6 @@ package com.devfabiocirelli.spaceinvaders
 
 import android.content.Context
 import android.graphics.*
-import android.util.Log
 
 class Player(val context: Context,val width: Int,val height: Int) {
 
